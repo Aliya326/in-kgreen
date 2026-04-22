@@ -5,47 +5,9 @@
             <div class="header-content">
                 <h1 class="page-title">
                     <i class="el-icon-user"></i>
-                    用户管理
+                    用户列表
                 </h1>
             </div>
-        </div>
-
-        <!-- 搜索区域 -->
-        <div class="search-section">
-            <el-card class="search-card">
-                <template #header>
-                    <div class="card-header">
-                        <span class="header-title">
-                            <i class="el-icon-search"></i>
-                            搜索筛选
-                        </span>
-                    </div>
-                </template>
-                <el-form :inline="true" :model="form" class="search-form">
-                    <el-row :gutter="24">
-                        <el-col :xs="24" :sm="12" :md="8" :lg="6">
-                            <el-form-item label="用户名">
-                                <el-input 
-                                    v-model="form.username" 
-                                    placeholder="请输入用户名"
-                                    clearable
-                                    prefix-icon="el-icon-user"
-                                />
-                            </el-form-item>
-                        </el-col>    
-                        <el-col :xs="24" :sm="12" :md="8" :lg="6">
-                            <el-form-item class="search-actions">
-                                <el-button type="primary" icon="el-icon-search">
-                                    搜索
-                                </el-button>
-                                <el-button type="primary">
-                                    重置
-                                </el-button>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                </el-form>
-            </el-card>
         </div>
 
         <!-- 用户列表 -->
@@ -53,18 +15,17 @@
             <el-card class="table-card" shadow="never">
                 <template #header>
                     <div class="card-header">
-                        <span class="header-title">
-                            <i class="el-icon-document"></i>
-                            用户列表
-                        </span>
                         <span>
-                            <el-button type="primary">新增用户</el-button>
+                            <el-button type="primary" @click="handleAdd">新增用户</el-button>
+                        </span>
+                        <span class="search-input">
+                            <el-input v-model="value" placeholder="请输入用户名或邮箱搜索" />
                         </span>
                     </div>
                 </template>
                 
                 <el-table 
-                    :data="tableData" 
+                    :data="filtersData" 
                     style="width: 100%"
                     :header-cell-style="{ background: '#fafafa', color: '#606266', fontWeight: '600' }"
                     stripe
@@ -145,169 +106,21 @@
                 </div>
             </el-card>
         </div>
+
+        <UserDrawer
+            v-model="dialogVisible"
+            ref="userDrawerRef"
+            @confirm="onConfirm"
+        />
     </div>
-    
-    <!-- 编辑抽屉 -->
-    <el-drawer
-        v-model="dialog"
-        title="编辑用户信息"
-        :before-close="handleClose"
-        direction="rtl"
-        size="480px"
-        class="user-drawer"
-    >
-        <div class="drawer-content">
-            <div class="drawer-header">
-                <div class="user-avatar-section">
-                    <el-avatar :size="64" class="edit-avatar">
-                        {{ editForm.name ? editForm.name.charAt(0) : 'U' }}
-                    </el-avatar>
-                    <el-button type="text" size="small" class="change-avatar-btn">
-                        <i class="el-icon-camera"></i>
-                        更换头像
-                    </el-button>
-                </div>
-            </div>
-            
-            <div class="drawer-body">
-                <el-form 
-                    :model="editForm" 
-                    :rules="formRules"
-                    ref="editFormRef"
-                    label-width="80px"
-                    class="edit-form"
-                >
-                    <el-form-item label="用户名" prop="name">
-                        <el-input 
-                            v-model="editForm.name" 
-                            placeholder="请输入用户名"
-                            prefix-icon="el-icon-user"
-                            clearable
-                        />
-                    </el-form-item>
-                    
-                    <el-form-item label="邮箱" prop="email">
-                        <el-input 
-                            v-model="editForm.email" 
-                            placeholder="请输入邮箱"
-                            prefix-icon="el-icon-message"
-                            clearable
-                        />
-                    </el-form-item>
-                    
-                    <el-form-item label="权限" prop="region">
-                        <el-select 
-                            v-model="editForm.region" 
-                            placeholder="请选择权限"
-                            style="width: 100%"
-                        >
-                            <el-option label="管理员" value="管理员">
-                                <span style="color: #e6a23c">⭐ 管理员</span>
-                            </el-option>
-                            <el-option label="普通用户" value="普通用户">
-                                <span style="color: #909399">👤 普通用户</span>
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    
-                    <el-form-item label="状态" prop="status">
-                        <el-radio-group v-model="editForm.status" class="status-radio">
-                            <el-radio label="enabled" class="status-option">
-                                <span class="status-enabled">● 启用</span>
-                            </el-radio>
-                            <el-radio label="disabled" class="status-option">
-                                <span class="status-disabled">● 禁用</span>
-                            </el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                    
-                    <el-divider content-position="left">其他信息</el-divider>
-                    
-                    <el-form-item label="手机号" prop="phone">
-                        <el-input 
-                            v-model="editForm.phone" 
-                            placeholder="请输入手机号"
-                            prefix-icon="el-icon-phone"
-                            clearable
-                        />
-                    </el-form-item>
-                    
-                    <el-form-item label="部门" prop="department">
-                        <el-input 
-                            v-model="editForm.department" 
-                            placeholder="请输入部门"
-                            prefix-icon="el-icon-office-building"
-                            clearable
-                        />
-                    </el-form-item>
-                </el-form>
-            </div>
-        </div>
-        
-        <div class="drawer-footer">
-            <el-button @click="cancelForm" size="medium">
-                <i class="el-icon-close"></i>
-                取消
-            </el-button>
-            <el-button 
-                type="primary" 
-                :loading="loading" 
-                @click="onClick" 
-                size="medium"
-            >
-                <i class="el-icon-check" v-if="!loading"></i>
-                {{ loading ? '保存中...' : '保存' }}
-            </el-button>
-        </div>
-    </el-drawer>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { ElMessageBox } from 'element-plus'
+import { ref, computed } from 'vue'
+import UserDrawer from '@/compents/dialog.vue'
 
-// 搜索表单
-const form = ref({
-    username: '',
-    email: '',
-    status: ''
-})
-
-// 编辑表单
-const editForm = ref({
-    name: '',
-    email: '',
-    region: '',
-    status: 'enabled',
-    phone: '',
-    department: ''
-})
-
-// 表单验证规则
-const formRules = ref({
-    name: [
-        { required: true, message: '请输入用户名', trigger: 'blur' },
-        { min: 2, max: 20, message: '用户名长度在 2 到 20 个字符', trigger: 'blur' }
-    ],
-    email: [
-        { required: true, message: '请输入邮箱', trigger: 'blur' },
-        { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
-    ],
-    region: [
-        { required: true, message: '请选择权限', trigger: 'change' }
-    ],
-    phone: [
-        { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号格式', trigger: 'blur' }
-    ]
-})
-
-// 抽屉状态
-const dialog = ref(false)
-const loading = ref(false)
-const timer = ref(null)
-const formLabelWidth = ref('120px')
-
-// 表格数据
+const value = ref('');
+const keyword = computed(() => value.value.trim());
 const tableData = ref([
     {
         id: 1,
@@ -324,17 +137,38 @@ const tableData = ref([
         status: 'disabled'
     }
 ])
+const filtersData = computed(() => {
+    if (!keyword.value) return tableData.value;
+    return tableData.value.filter(item => {
+        return item.prop.includes(keyword.value) ||
+        item.email.includes(keyword.value)
+    });
+});
 
-// 方法
-const openEditDrawer = (user) => {
-    dialog.value = true
-    editForm.value.name = user.prop
-    editForm.value.email = user.email
-    editForm.value.region = user.role
-    editForm.value.status = user.status
-    editForm.value.phone = user.phone || ''
-    editForm.value.department = user.department || ''
+const dialogVisible = ref(false)
+const userDrawerRef = ref(null)
+
+const handleAdd = () => {
+    userDrawerRef.value?.resetForm()
+    dialogVisible.value = true
 }
+
+const openEditDrawer = (user) => {
+    userDrawerRef.value?.setFormData({
+        name: user.prop,
+        email: user.email,
+        region: user.role,
+        status: user.status,
+        phone: user.phone || '',
+        department: user.department || ''
+    })
+    dialogVisible.value = true
+}
+
+//数据的保存
+const onConfirm = (formData) => {
+    console.log('保存的数据:', formData)
+}   
 
 const deleteUser = (user) => {
     const index = tableData.value.findIndex(item => item.id === user.id)
@@ -342,46 +176,55 @@ const deleteUser = (user) => {
         tableData.value.splice(index, 1)
     }
 }
-
-const onClick = () => {
-    loading.value = true
-    setTimeout(() => {
-        loading.value = false
-        dialog.value = false
-    }, 400)
-}
-
-const handleClose = (done) => {
-    if (loading.value) return
-    
-    ElMessageBox.confirm('确定要关闭吗？未保存的数据将丢失。')
-        .then(() => {
-            loading.value = true
-            timer.value = setTimeout(() => {
-                done()
-                setTimeout(() => {
-                    loading.value = false
-                }, 400)
-            }, 2000)
-        })
-        .catch(() => {
-            // 取消关闭
-        })
-}
-
-const cancelForm = () => {
-    loading.value = false
-    dialog.value = false
-    if (timer.value) {
-        clearTimeout(timer.value)
-    }
-}
-
-
 </script>
-
 <style>
-/* 后台管理系统整体风格 */
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.card-header > span:first-child {
+    flex-shrink: 0;
+}
+
+.search-input {
+    flex: 0 1 320px;
+    min-width: 200px;
+}
+
+.search-input .el-input {
+    width: 100%;
+}
+
+.search-input .el-input__wrapper {
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px #dcdfe6 inset;
+    transition: box-shadow 0.25s;
+}
+
+.search-input .el-input__wrapper:hover {
+    box-shadow: 0 0 0 1px #c0c4cc inset;
+}
+
+.search-input .el-input__wrapper.is-focus {
+    box-shadow: 0 0 0 1px #409eff inset, 0 0 0 3px rgba(64, 158, 255, 0.1);
+}
+
+.card-header .el-button--primary {
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: all 0.25s;
+}
+
+.card-header .el-button--primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(64, 158, 255, 0.35);
+}
+
 .userSerch {
     margin-bottom: 16px;
     padding: 24px;
@@ -395,10 +238,8 @@ const cancelForm = () => {
     background: #fff;
     border-radius: 6px;
     border: 1px solid #e4e7ed;
-
 }
 
-/* 卡片样式重置 */
 .el-card {
     border: 1px solid #e4e7ed;
     border-radius: 6px;
