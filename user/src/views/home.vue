@@ -8,18 +8,12 @@
                 <div>区域1 - {{ item.value }}</div>
             </el-card>
         </div>
-        <div class="sidebar">
-            <el-card class="sidebar-card-1">
-                <div class="panel">区域2</div>
-            </el-card>
-            <el-card class="sidebar-card-2">
-                <div class="panel">区域3</div>
-            </el-card>
-        </div>
+        <contan-sidebar/>
     </div>
 </template>
 <script setup>
 import { ref } from 'vue'
+import contanSidebar from '@/views/contanSidebar.vue'
 
 const area1 = ref([
     {
@@ -58,21 +52,6 @@ const area1 = ref([
 }
 
 .main-card {
-    width: 100%;
-}
-
-.sidebar {
-    width: 300px;
-    flex-shrink: 0;
-    position: sticky;
-    top: 20px;
-    align-self: flex-start;
-    max-height: calc(100vh - 40px);
-    
-}
-
-.sidebar-card-1 {
-    padding: auto;
     width: 100%;
 }
 </style>

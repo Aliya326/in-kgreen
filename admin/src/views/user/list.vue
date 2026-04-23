@@ -177,7 +177,7 @@ const deleteUser = (user) => {
     }
 }
 </script>
-<style>
+<style scoped>
 .card-header {
     display: flex;
     align-items: center;
