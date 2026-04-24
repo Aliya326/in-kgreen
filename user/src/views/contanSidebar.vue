@@ -1,6 +1,6 @@
 <template>
-  <div style="display: flex; flex-direction: column; gap: 16px;">
-    <a-card hoverable style="width: 300px; height: auto;">
+  <div style="display: flex; flex-direction: column; gap: 16px;" class="a-card">
+    <a-card>
       <template #cover>
         <img
           alt="example"
@@ -18,7 +18,7 @@
         </template>
       </a-card-meta>
     </a-card>
-    <a-card able style="width: 300px; height:auto;" title="#标签">
+    <a-card title="#标签">
         <a-space :size="[0, 'small']" wrap style="flex-wrap: wrap;">
             <a-tag :bordered="false" color="processing"
             v-for="item in tagsData"
@@ -55,3 +55,14 @@ export default {
   }
 }
 </script>
+
+<style>
+.a-card {
+    width: 300px;
+    height: auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    position: sticky;
+    top: 66px;
+    flex-shrink: 0;
+}
+</style> 

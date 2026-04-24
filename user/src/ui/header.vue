@@ -1,43 +1,81 @@
 <template>
-  <el-menu
-    :default-active="activeIndex"
-    class="el-menu-demo"
-    mode="horizontal"
-    :ellipsis="false"
-    @select="handleSelect"
-  >
-    <el-menu-item index="0">
-      <img style="width: 50px" src="/favicon.ico"/>
-    </el-menu-item>
-    <el-menu-item index="2-9">分类</el-menu-item>
-    <el-menu-item index="2-11">动态</el-menu-item>
-    <el-sub-menu index="2">
-      <template #title>Workspace</template>
-      <el-menu-item index="2-1">item one</el-menu-item>
-      <el-menu-item index="2-2">item two</el-menu-item>
-      <el-menu-item index="2-3">item three</el-menu-item>
-
-      <el-sub-menu index="2-4">
-        <template #title>item four</template>
-        <el-menu-item index="2-4-1">item one</el-menu-item>
-        <el-menu-item index="2-4-2">item two</el-menu-item>
-        <el-menu-item index="2-4-3">item three</el-menu-item>
-      </el-sub-menu>
-    </el-sub-menu>
-  </el-menu>
+  <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" class="header-menu" />
 </template>
 
 <script setup>
-import { ref } from 'vue'
-
-const activeIndex = ref('1')
-const handleSelect = (key, keyPath) => {
-  console.log(key, keyPath)
-}
+import { h, ref } from 'vue';
+import { HomeOutlined, FolderOutlined, SettingOutlined } from '@ant-design/icons-vue';
+const current = ref(['mail']);
+const items = ref([
+  {
+    key: 'home',
+    icon: () => h(HomeOutlined),
+    label: '首页',
+    title: '首页',
+  },
+  {
+    key: 'archive',
+    icon: () => h(FolderOutlined),
+    label: '归档',
+    title: '归档',
+  },
+  {
+    key: 'sub1',
+    icon: () => h(SettingOutlined),
+    label: 'Navigation Three - Submenu',
+    title: 'Navigation Three - Submenu',
+    children: [
+      {
+        type: 'group',
+        label: 'Item 1',
+        children: [
+          {
+            label: 'Option 1',
+            key: 'setting:1',
+          },
+          {
+            label: 'Option 2',
+            key: 'setting:2',
+          },
+        ],
+      },
+      {
+        type: 'group',
+        label: 'Item 2',
+        children: [
+          {
+            label: 'Option 3',
+            key: 'setting:3',
+          },
+          {
+            label: 'Option 4',
+            key: 'setting:4',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    key: 'alipay',
+    label: h(
+      'a',
+      {
+        href: 'https://antdv.com',
+        target: '_blank',
+      },
+      'Navigation Four - Link',
+    ),
+    title: 'Navigation Four - Link',
+  },
+]);
 </script>
-
 <style scoped>
-.el-menu--horizontal > .el-menu-item:nth-child(1) {
-  margin-right: auto;
+.header-menu {
+    background-color: #f5f5f5;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
 }
-</style>
+</style>  

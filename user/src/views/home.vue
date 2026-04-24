@@ -5,7 +5,7 @@
             :key="item.name"
             class="main-card"
             >
-                <div>区域1 - {{ item.value }}</div>
+                <div>区域 {{ item.value }}</div>
             </el-card>
         </div>
         <contan-sidebar/>
@@ -39,9 +39,10 @@ const area1 = ref([
     display: flex;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 66px 20px 20px;
     gap: 20px;
     min-height: 100vh;
+    box-sizing: border-box;
 }
 
 .main-content {
