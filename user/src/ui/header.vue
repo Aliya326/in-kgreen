@@ -10,7 +10,6 @@
       <img style="width: 50px" src="/favicon.ico"/>
     </el-menu-item>
     <el-menu-item index="2-9">分类</el-menu-item>
-    <el-menu-item index="2-10">标签</el-menu-item>
     <el-menu-item index="2-11">动态</el-menu-item>
     <el-sub-menu index="2">
       <template #title>Workspace</template>
@@ -25,10 +24,6 @@
         <el-menu-item index="2-4-3">item three</el-menu-item>
       </el-sub-menu>
     </el-sub-menu>
-
-    <el-menu-item index="0">
-      <img style="width: 50px" src="/favicon.ico"/>
-    </el-menu-item>
   </el-menu>
 </template>
 

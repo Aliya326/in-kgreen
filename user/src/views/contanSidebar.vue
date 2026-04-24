@@ -1,28 +1,57 @@
 <template>
-    <div class="sidebar">
-            <el-card class="sidebar-card-1">
-                <div class="panel">区域2</div>
-            </el-card>
-            <el-card class="sidebar-card-2">
-                <div class="panel">区域3</div>
-            </el-card>
-            </div>
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <a-card hoverable style="width: 300px; height: auto;">
+      <template #cover>
+        <img
+          alt="example"
+          src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+        />
+      </template>
+      <template #actions>
+        <setting-outlined key="setting" />
+        <edit-outlined key="edit" />
+        <ellipsis-outlined key="ellipsis" />
+      </template>
+      <a-card-meta title="Card title" description="This is the description">
+        <template #avatar>
+          <a-avatar src="https://joeschmoe.io/api/v1/random" />
+        </template>
+      </a-card-meta>
+    </a-card>
+    <a-card able style="width: 300px; height:auto;" title="#标签">
+        <a-space :size="[0, 'small']" wrap style="flex-wrap: wrap;">
+            <a-tag :bordered="false" color="processing"
+            v-for="item in tagsData"
+            :key="item.name"
+        >{{item.name}}</a-tag>
+        </a-space>
+    </a-card>
+  </div>
 </template>
+<script>
+import { ref } from 'vue';
+import { SettingOutlined, EditOutlined, EllipsisOutlined} from '@ant-design/icons-vue';
 
-<style>
-.sidebar {
-    width: 300px;
-    flex-shrink: 0;
-    position: sticky;
-    top: 20px;
-    align-self: flex-start;
-    max-height: calc(100vh - 40px);
-    
+export default {
+  components: {
+    SettingOutlined,
+    EditOutlined,
+    EllipsisOutlined,
+  },
+  setup() {
+    const tagsData = ref([
+    {
+        name: '标签1',
+        count: 100,
+    },
+    {
+        name: '标签2',
+        count: 2000,
+    },
+]);
+    return {
+        tagsData,
+    }
+  }
 }
-
-.sidebar-card-1 {
-    padding: auto;
-    width: 100%;
-}
-
-</style>
+</script>
