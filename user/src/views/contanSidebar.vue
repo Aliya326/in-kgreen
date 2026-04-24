@@ -1,6 +1,6 @@
 <template>
-  <div style="display: flex; flex-direction: column; gap: 16px;" class="a-card">
-    <a-card>
+  <div class="a-card">
+    <a-card style="box-shadow: 0 2px 8px rgba(0,0,0,0.15); margin: 20px; width: 300px;">
       <template #cover>
         <img
           alt="example"
@@ -12,13 +12,13 @@
         <edit-outlined key="edit" />
         <ellipsis-outlined key="ellipsis" />
       </template>
-      <a-card-meta title="Card title" description="This is the description">
+      <a-card-meta title="user.name" description="user.description">
         <template #avatar>
           <a-avatar src="https://joeschmoe.io/api/v1/random" />
         </template>
       </a-card-meta>
     </a-card>
-    <a-card title="#标签">
+    <a-card title="#标签" style="box-shadow: 0 2px 8px rgba(0,0,0,0.15); margin: 20px; width: 300px;">
         <a-space :size="[0, 'small']" wrap style="flex-wrap: wrap;">
             <a-tag :bordered="false" color="processing"
             v-for="item in tagsData"
@@ -58,9 +58,7 @@ export default {
 
 <style>
 .a-card {
-    width: 300px;
     height: auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     position: sticky;
     top: 66px;
     flex-shrink: 0;

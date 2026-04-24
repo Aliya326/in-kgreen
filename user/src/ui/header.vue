@@ -1,23 +1,34 @@
 <template>
-  <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" class="header-menu" />
+  <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" class="header-menu" 
+  @click="handleClick"
+  />
 </template>
 
 <script setup>
 import { h, ref } from 'vue';
 import { HomeOutlined, FolderOutlined, SettingOutlined } from '@ant-design/icons-vue';
+import router from '@/router'
+
 const current = ref(['mail']);
+//需要访问的是一个对象，需要通过 e.key 获取点击的菜单 key，而不是直接访问 item.path
+const handleClick = (e) => {
+    const key = e.key
+      router.push(key)
+}
 const items = ref([
   {
     key: 'home',
     icon: () => h(HomeOutlined),
     label: '首页',
     title: '首页',
+    path: '/',
   },
   {
     key: 'archive',
     icon: () => h(FolderOutlined),
     label: '归档',
     title: '归档',
+    path: '/archive',
   },
   {
     key: 'sub1',
@@ -77,5 +88,7 @@ const items = ref([
     left: 0;
     right: 0;
     z-index: 1000;
+    display: flex;
+    justify-content: center;
 }
 </style>  
