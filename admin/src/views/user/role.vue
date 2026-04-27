@@ -18,8 +18,7 @@
                 <el-table-column prop="role" label="权限"/>
                 <el-table-column prop="prop" label="操作">
                     <template #default="scope">
-                        <el-button type="primary">编辑</el-button>
-                        <el-button type="danger">删除</el-button>
+                        <el-button type="danger" @click="deleteRole(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -40,6 +39,13 @@ const filteredRoles = computed(() => {
         role.role.toLowerCase().includes(keyword.value)
     )
 });
+
+const deleteRole = (role) => {
+    const index = roles.value.findIndex(item => item.id === role.id)
+    if (index !== -1) {
+        roles.value.splice(index, 1)
+    }
+}
 
 const roles = ref([
     {
