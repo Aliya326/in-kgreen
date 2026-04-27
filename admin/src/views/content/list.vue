@@ -5,9 +5,9 @@
             <div slot="header">文章列表</div>
             <div class="article-search">
                 <el-input v-model="article" placeholder="请输入文章标题或作者进行搜索" clearable />
-                <el-select v-model="value" placeholder="请选择状态" style="width: 240px">
-                    <el-option :label="已发布" :value="published"/>
-                    <el-option :label="草稿" :value="draft"/>
+                <el-select v-model="value" placeholder="请选择状态" clearable style="width: 240px">
+                    <el-option :label="已发布" value="published"/>
+                    <el-option :label="草稿" value="draft"/>
                 </el-select>
             </div>      
             <el-table :data="filteredData" style="width: 100%">
@@ -28,6 +28,7 @@
 <script setup>
 import { ref,computed } from 'vue';
 
+const value = ref('');
 const article = ref('');
 const data = ref([
     { id: 1, prop: '文章1', author: '作者A', status: 'published' },
@@ -38,10 +39,12 @@ const data = ref([
 ]);
 
 const filteredData = computed(() => {
-    if(!article.value) return data.value;
     return data.value.filter(item => {
-        return item.prop.includes(article.value) || item.author.includes(article.value)
-        || item.status
+        const matchSearch = !article.value 
+        || item.prop.includes(article.value)
+        || item.author.includes(article.value)
+        const matchStatus = !value.value || item.status === value.value
+        return matchSearch && matchStatus
         ;
     });
 });

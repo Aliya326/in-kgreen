@@ -147,13 +147,16 @@ const filtersData = computed(() => {
 
 const dialogVisible = ref(false)
 const userDrawerRef = ref(null)
+const editingUserId = ref(null)
 
 const handleAdd = () => {
+    editingUserId.value = null
     userDrawerRef.value?.resetForm()
     dialogVisible.value = true
 }
 
 const openEditDrawer = (user) => {
+    editingUserId.value = user.id
     userDrawerRef.value?.setFormData({
         name: user.prop,
         email: user.email,
@@ -165,9 +168,34 @@ const openEditDrawer = (user) => {
     dialogVisible.value = true
 }
 
-//数据的保存
 const onConfirm = (formData) => {
-    console.log('保存的数据:', formData)
+    if (editingUserId.value !== null) {
+        const index = tableData.value.findIndex(item => item.id === editingUserId.value)
+        if (index !== -1) {
+            tableData.value[index] = {
+                ...tableData.value[index],
+                prop: formData.name,
+                role: formData.region,
+                email: formData.email,
+                status: formData.status,
+                phone: formData.phone,
+                department: formData.department
+            }
+        }
+    } else {
+        const newId = tableData.value.length > 0
+            ? Math.max(...tableData.value.map(item => item.id)) + 1
+            : 1
+        tableData.value.push({
+            id: newId,
+            prop: formData.name,
+            role: formData.region,
+            email: formData.email,
+            status: formData.status,
+            phone: formData.phone,
+            department: formData.department
+        })
+    }
 }   
 
 const deleteUser = (user) => {

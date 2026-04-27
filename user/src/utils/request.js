@@ -7,6 +7,7 @@ const service = axios.create({
 
 // 请求拦截器（可在此添加 token 等鉴权信息）
 service.interceptors.request.use(
+    //config 是请求配置对象，包含请求方法、URL、数据等信息
     config => {
         return config
     },
@@ -18,6 +19,7 @@ service.interceptors.request.use(
 
 // 响应拦截器（自动解包 response.data，统一错误处理）
 service.interceptors.response.use(
+    //response 是响应对象，包含状态码、数据等信息
     response => {
         return response.data
     },

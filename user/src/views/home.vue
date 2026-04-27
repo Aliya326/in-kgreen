@@ -19,7 +19,6 @@ import contanSidebar from '@/views/contanSidebar.vue'
 import request from '@/utils/request'
 
 const area1 = ref([])
-
 const fetchData = async () => {
     try {
         const res = await request.get('/mock/area1.json')
