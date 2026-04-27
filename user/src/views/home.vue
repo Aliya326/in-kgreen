@@ -1,10 +1,11 @@
 <template>
  <div class="home-container">
   <div class="home-content">
-    <a-card title="Card title" :bordered="false"
+    <a-card :bordered="false"
     style="margin: 20px;"
     v-for="item in area1"
     :key="item.name"
+    :title="item.title"
     >
       {{ item.value }}
     </a-card>
@@ -13,27 +14,25 @@
 </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import contanSidebar from '@/views/contanSidebar.vue'
+import request from '@/utils/request'
 
-const area1 = ref([
-    {
-        name: '1',
-        value: '1'
-    },
-    {
-        name: '2',
-        value: '2'
-    },
-    {
-        name: '3',
-        value: '3'
-    },
-    {
-        name: '4',
-        value: '4'
+const area1 = ref([])
+
+const fetchData = async () => {
+    try {
+        const res = await request.get('/mock/area1.json')
+        area1.value = res
+    } catch (error) {
+        console.error('获取数据失败：', error)
     }
-])
+}
+
+onMounted(() => {
+    fetchData()
+})
+
 </script>
 <style scoped>
 .home-container {

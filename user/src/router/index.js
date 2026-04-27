@@ -18,6 +18,11 @@ const router = createRouter({
             path:"/archive",
             name:"archive",
             component:()=>import("@/views/archive.vue")
+          },
+          {
+            path:"/about",
+            name:"about",
+            component:()=>import("@/about.vue")
           }
         ]
       },

@@ -8,7 +8,7 @@
         />
       </template>
       <template #actions>
-        <setting-outlined key="setting" />
+        <setting-outlined key="setting" @click="setting"/>
         <edit-outlined key="edit" />
         <ellipsis-outlined key="ellipsis" />
       </template>
@@ -28,7 +28,7 @@
     </a-card>
   </div>
 </template>
-<script>
+<script >
 import { ref } from 'vue';
 import { SettingOutlined, EditOutlined, EllipsisOutlined} from '@ant-design/icons-vue';
 
@@ -51,6 +51,11 @@ export default {
 ]);
     return {
         tagsData,
+    }
+  },
+  methods: {
+    setting() {
+        console.log('setting');
     }
   }
 }

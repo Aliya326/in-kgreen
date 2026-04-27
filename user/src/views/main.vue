@@ -9,6 +9,6 @@ import appHeader from '@/ui/header.vue'
 
 <style scoped>
 .main-content {
-    padding-top: 66px;  /* 统一在这里设置 */
+    padding-top: 66px;
 }
 </style>

@@ -6,10 +6,10 @@
 
 <script setup>
 import { h, ref } from 'vue';
-import { HomeOutlined, FolderOutlined, SettingOutlined } from '@ant-design/icons-vue';
+import { HomeOutlined, FolderOutlined, InboxOutlined } from '@ant-design/icons-vue';
 import router from '@/router'
 
-const current = ref(['mail']);
+const current = ref(['home']);
 //需要访问的是一个对象，需要通过 e.key 获取点击的菜单 key，而不是直接访问 item.path
 const handleClick = (e) => {
     const key = e.key
@@ -25,23 +25,24 @@ const items = ref([
   },
   {
     key: 'archive',
-    icon: () => h(FolderOutlined),
+    icon: () => h(InboxOutlined),
     label: '归档',
     title: '归档',
     path: '/archive',
   },
   {
     key: 'sub1',
-    icon: () => h(SettingOutlined),
-    label: 'Navigation Three - Submenu',
-    title: 'Navigation Three - Submenu',
+    icon: () => h(FolderOutlined),
+    label: '分类',
+    title: '分类',
     children: [
       {
         type: 'group',
         label: 'Item 1',
         children: [
           {
-            label: 'Option 1',
+            label: '分类1',
+            title: '分类1',
             key: 'setting:1',
           },
           {
@@ -67,16 +68,10 @@ const items = ref([
     ],
   },
   {
-    key: 'alipay',
-    label: h(
-      'a',
-      {
-        href: 'https://antdv.com',
-        target: '_blank',
-      },
-      'Navigation Four - Link',
-    ),
-    title: 'Navigation Four - Link',
+    key: 'about',
+      path: '/about',
+      label: '关于',
+    title: '关于',
   },
 ]);
 </script>
