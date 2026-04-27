@@ -28,9 +28,9 @@
           </div>
           <div class="card-right">
             <div class="card-title">浏览量</div>
-            <div class="card-value">{{  }}</div>
+            <div class="card-value">{{ todayBrowseCount }}</div>
             <div class="card-stats">
-              <span class="today-value">今日: {{  }}</span>
+              <span class="today-value">今日: {{ totalBrowseCount }}</span>
             </div>
           </div>
         </el-card>
@@ -47,9 +47,9 @@
           </div>
           <div class="card-right">
             <div class="card-title">访客量</div>
-            <div class="card-value">{{ }}</div>
+            <div class="card-value">{{ visitorCount }}</div>
             <div class="card-stats">
-              <span class="today-value">今日: {{ }}</span>
+              <span class="today-value">今日: {{ todayVisitorCount }}</span>
             </div>
           </div>
         </el-card>
@@ -66,9 +66,9 @@
           </div>
           <div class="card-right">
             <div class="card-title">评论数</div>
-            <div class="card-value">{{  }}</div>
+            <div class="card-value">{{ commentCount }}</div>
             <div class="card-stats">
-              <span class="today-value">今日: {{  }}</span>
+              <span class="today-value">今日: {{ todayCommentCount }}</span>
             </div>
           </div>
         </el-card>
@@ -85,9 +85,9 @@
           </div>
           <div class="card-right">
             <div class="card-title">用户数</div>
-            <div class="card-value">{{  }}</div>
+            <div class="card-value">{{ userCount }}</div>
             <div class="card-stats">
-              <span class="today-value">今日: {{ }}</span>
+              <span class="today-value">今日: {{ todayUserCount }}</span>
             </div>
           </div>
         </el-card>
@@ -138,7 +138,42 @@
 
 
 <script setup>
+import { computed, ref } from 'vue'
 import { User, ChatDotRound, UserFilled, View} from '@element-plus/icons-vue'
+
+
+const browseCountData = ref([
+    {
+        time:'2026-1',
+        value: 30,
+    },
+    {
+        time:'2026-2',
+        value: 40,
+    },
+    {
+        time:'2026-3',
+        value: 50,
+    },
+    {
+      time:'2026-4-27',
+      value:60,
+    }
+]);
+
+const getCurrentTimeStr = () => {
+  const now = new Date()
+  return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
+}
+
+const todayBrowseCount = computed(() => {
+  const current = browseCountData.value.find(item => item.time === getCurrentTimeStr())
+  return current ? current.value : 0
+})
+
+const totalBrowseCount = computed(() => {
+  return browseCountData.value.reduce((acc, cur) => acc + cur.value, 0)
+})
 
 </script>
 
