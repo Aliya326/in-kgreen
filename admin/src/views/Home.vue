@@ -8,15 +8,15 @@
                         <p class="name">Admin</p>
                         <p class="access">管理员</p>
                     </div>
-                </div>   
+                </div>
                 <div class="login-info">
-                    <p>上次登入时间: <span>1999</span></p>
+                    <p>上次登入时间: <span>2026-04-26</span></p>
                     <p>上次登入IP: <span>192.168.1.1</span></p>
-                </div> 
+                </div>
             </el-card>
         </el-row>
 
-            <el-row :gutter="20" class="overview-cards">
+        <el-row :gutter="20" class="overview-cards">
       <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
         <el-card class="overview-card" shadow="hover">
           <div class="card-left">
@@ -27,10 +27,9 @@
             </div>
           </div>
           <div class="card-right">
-            <div class="card-title">浏览量</div>
-            <div class="card-value">{{ todayBrowseCount }}</div>
+            <div class="card-title">浏览量: {{ todayBrowseCount }}</div>
             <div class="card-stats">
-              <span class="today-value">今日: {{ totalBrowseCount }}</span>
+              <span class="today-value">本月: {{ totalBrowseCount }}</span>
             </div>
           </div>
         </el-card>
@@ -46,10 +45,9 @@
             </div>
           </div>
           <div class="card-right">
-            <div class="card-title">访客量</div>
-            <div class="card-value">{{ visitorCount }}</div>
+            <div class="card-title">访客量: {{ visitorCount }}</div>
             <div class="card-stats">
-              <span class="today-value">今日: {{ todayVisitorCount }}</span>
+              <span class="today-value">本月: {{ todayVisitorCount }}</span>
             </div>
           </div>
         </el-card>
@@ -65,10 +63,9 @@
             </div>
           </div>
           <div class="card-right">
-            <div class="card-title">评论数</div>
-            <div class="card-value">{{ commentCount }}</div>
+            <div class="card-title">评论数: {{ commentCount }}</div>
             <div class="card-stats">
-              <span class="today-value">今日: {{ todayCommentCount }}</span>
+              <span class="today-value">本月: {{ todayCommentCount }}</span>
             </div>
           </div>
         </el-card>
@@ -84,18 +81,16 @@
             </div>
           </div>
           <div class="card-right">
-            <div class="card-title">用户数</div>
-            <div class="card-value">{{ userCount }}</div>
+            <div class="card-title">用户数: {{ userCount }}</div>
             <div class="card-stats">
-              <span class="today-value">今日: {{ todayUserCount }}</span>
+              <span class="today-value">本月: {{ todayUserCount }}</span>
             </div>
           </div>
         </el-card>
       </el-col>
     </el-row>
 
-        <!-- 统计-->
-            <el-row :gutter="20" class="charts-section">
+        <el-row :gutter="20" class="charts-section">
       <el-col :xs="24" :sm="24" :md="16" :lg="15" :xl="15">
         <el-card shadow="hover">
           <template #header>
@@ -121,45 +116,99 @@
         </el-card>
       </el-col>
     </el-row>
-        <el-row :gutter="20" class="charts-section">
-      <el-col :xs="24" :sm="24" :md="8" :lg="9" :xl="9">
-        <el-card shadow="hover">
-          <template #header>
-            <div class="chart-header">
-              <span>标签统计</span>
-            </div>
-          </template>
-          <div ref="tagCloudRef" class="chart-container"></div>
-        </el-card>
-      </el-col>
-    </el-row>
     </el-col>
 </template>
 
-
 <script setup>
-import { computed, ref } from 'vue'
-import { User, ChatDotRound, UserFilled, View} from '@element-plus/icons-vue'
-
+import { computed, ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { User, ChatDotRound, UserFilled, View } from '@element-plus/icons-vue'
+import * as echarts from 'echarts'
 
 const browseCountData = ref([
-    {
-        time:'2026-1',
-        value: 30,
-    },
-    {
-        time:'2026-2',
-        value: 40,
-    },
-    {
-        time:'2026-3',
-        value: 50,
-    },
-    {
-      time:'2026-4-27',
-      value:60,
-    }
-]);
+  { time: '2026-4-1', value: 120 },
+  { time: '2026-4-2', value: 98 },
+  { time: '2026-4-3', value: 145 },
+  { time: '2026-4-4', value: 88 },
+  { time: '2026-4-5', value: 167 },
+  { time: '2026-4-6', value: 203 },
+  { time: '2026-4-7', value: 190 },
+  { time: '2026-4-8', value: 156 },
+  { time: '2026-4-9', value: 134 },
+  { time: '2026-4-10', value: 178 },
+  { time: '2026-4-11', value: 210 },
+  { time: '2026-4-12', value: 245 },
+  { time: '2026-4-13', value: 198 },
+  { time: '2026-4-14', value: 176 },
+  { time: '2026-4-15', value: 220 },
+  { time: '2026-4-16', value: 258 },
+  { time: '2026-4-17', value: 234 },
+  { time: '2026-4-18', value: 189 },
+  { time: '2026-4-19', value: 212 },
+  { time: '2026-4-20', value: 276 },
+  { time: '2026-4-21', value: 298 },
+  { time: '2026-4-22', value: 256 },
+  { time: '2026-4-23', value: 234 },
+  { time: '2026-4-24', value: 267 },
+  { time: '2026-4-25', value: 289 },
+  { time: '2026-4-26', value: 312 },
+  { time: '2026-4-27', value: 60 },
+])
+
+const visitorData = ref([
+  { time: '2026-4-1', value: 45 },
+  { time: '2026-4-2', value: 38 },
+  { time: '2026-4-3', value: 56 },
+  { time: '2026-4-4', value: 33 },
+  { time: '2026-4-5', value: 67 },
+  { time: '2026-4-6', value: 82 },
+  { time: '2026-4-7', value: 75 },
+  { time: '2026-4-8', value: 61 },
+  { time: '2026-4-9', value: 52 },
+  { time: '2026-4-10', value: 70 },
+  { time: '2026-4-11', value: 88 },
+  { time: '2026-4-12', value: 102 },
+  { time: '2026-4-13', value: 79 },
+  { time: '2026-4-14', value: 68 },
+  { time: '2026-4-15', value: 90 },
+  { time: '2026-4-16', value: 105 },
+  { time: '2026-4-17', value: 95 },
+  { time: '2026-4-18', value: 74 },
+  { time: '2026-4-19', value: 85 },
+  { time: '2026-4-20', value: 112 },
+  { time: '2026-4-21', value: 120 },
+  { time: '2026-4-22', value: 100 },
+  { time: '2026-4-23', value: 92 },
+  { time: '2026-4-24', value: 108 },
+  { time: '2026-4-25', value: 118 },
+  { time: '2026-4-26', value: 130 },
+  { time: '2026-4-27', value: 25 },
+])
+
+const monthlyTrendData = ref({
+  months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+  browse: [890, 1200, 1560, 2100, 1890, 2340, 2780, 2560, 3120, 2890, 3200, 3450],
+  visitor: [340, 460, 590, 810, 720, 900, 1050, 970, 1180, 1090, 1210, 1310],
+})
+
+const categoryData = ref([
+  { name: '技术文章', value: 42 },
+  { name: '生活随笔', value: 18 },
+  { name: '项目经验', value: 28 },
+  { name: '学习笔记', value: 35 },
+  { name: '资源分享', value: 15 },
+])
+
+const commentCountData = ref([
+  { time: '2026-4-1', value: 8 },
+  { time: '2026-4-5', value: 12 },
+  { time: '2026-4-10', value: 15 },
+  { time: '2026-4-15', value: 10 },
+  { time: '2026-4-20', value: 18 },
+  { time: '2026-4-25', value: 22 },
+  { time: '2026-4-27', value: 3 },
+])
+
+const userData = ref({ today: 5, monthly: 38 })
 
 const getCurrentTimeStr = () => {
   const now = new Date()
@@ -175,6 +224,198 @@ const totalBrowseCount = computed(() => {
   return browseCountData.value.reduce((acc, cur) => acc + cur.value, 0)
 })
 
+const visitorCount = computed(() => {
+  const current = visitorData.value.find(item => item.time === getCurrentTimeStr())
+  return current ? current.value : 0
+})
+
+const todayVisitorCount = computed(() => {
+  return visitorData.value.reduce((acc, cur) => acc + cur.value, 0)
+})
+
+const commentCount = computed(() => {
+  const current = commentCountData.value.find(item => item.time === getCurrentTimeStr())
+  return current ? current.value : 0
+})
+
+const todayCommentCount = computed(() => {
+  return commentCountData.value.reduce((acc, cur) => acc + cur.value, 0)
+})
+
+const userCount = computed(() => userData.value.today)
+const todayUserCount = computed(() => userData.value.monthly)
+
+const trendType = ref('daily')
+const trendChartRef = ref(null)
+const pieChartRef = ref(null)
+let trendChart = null
+let pieChart = null
+
+const fetchTrendData = () => {
+  if (!trendChart) return
+  if (trendType.value === 'daily') {
+    const dates = browseCountData.value.map(item => item.time.slice(5))
+    const browseValues = browseCountData.value.map(item => item.value)
+    const visitorValues = visitorData.value.map(item => item.value)
+    trendChart.setOption({
+      xAxis: { data: dates },
+      series: [
+        { data: browseValues },
+        { data: visitorValues },
+      ],
+    })
+  } else {
+    trendChart.setOption({
+      xAxis: { data: monthlyTrendData.value.months },
+      series: [
+        { data: monthlyTrendData.value.browse },
+        { data: monthlyTrendData.value.visitor },
+      ],
+    })
+  }
+}
+
+const initTrendChart = () => {
+  if (!trendChartRef.value) return
+  trendChart = echarts.init(trendChartRef.value)
+  const dates = browseCountData.value.map(item => item.time.slice(5))
+  const browseValues = browseCountData.value.map(item => item.value)
+  const visitorValues = visitorData.value.map(item => item.value)
+
+  trendChart.setOption({
+    tooltip: {
+      trigger: 'axis',
+      backgroundColor: 'rgba(255,255,255,0.96)',
+      borderColor: '#e5e7eb',
+      borderWidth: 1,
+      textStyle: { color: '#334155' },
+    },
+    legend: {
+      data: ['浏览量', '访客量'],
+      top: 0,
+      right: 0,
+      textStyle: { color: '#64748b' },
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      top: 40,
+      containLabel: true,
+    },
+    xAxis: {
+      type: 'category',
+      data: dates,
+      boundaryGap: false,
+      axisLine: { lineStyle: { color: '#e5e7eb' } },
+      axisLabel: { color: '#64748b' },
+    },
+    yAxis: {
+      type: 'value',
+      axisLine: { show: false },
+      axisTick: { show: false },
+      splitLine: { lineStyle: { color: '#f1f5f9' } },
+      axisLabel: { color: '#64748b' },
+    },
+    series: [
+      {
+        name: '浏览量',
+        type: 'line',
+        smooth: true,
+        data: browseValues,
+        lineStyle: { width: 2.5, color: '#8b5cf6' },
+        itemStyle: { color: '#8b5cf6' },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: 'rgba(139,92,246,0.25)' },
+            { offset: 1, color: 'rgba(139,92,246,0.02)' },
+          ]),
+        },
+      },
+      {
+        name: '访客量',
+        type: 'line',
+        smooth: true,
+        data: visitorValues,
+        lineStyle: { width: 2.5, color: '#3b82f6' },
+        itemStyle: { color: '#3b82f6' },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: 'rgba(59,130,246,0.25)' },
+            { offset: 1, color: 'rgba(59,130,246,0.02)' },
+          ]),
+        },
+      },
+    ],
+  })
+}
+
+const initPieChart = () => {
+  if (!pieChartRef.value) return
+  pieChart = echarts.init(pieChartRef.value)
+
+  pieChart.setOption({
+    tooltip: {
+      trigger: 'item',
+      backgroundColor: 'rgba(255,255,255,0.96)',
+      borderColor: '#e5e7eb',
+      borderWidth: 1,
+      textStyle: { color: '#334155' },
+    },
+    legend: {
+      orient: 'horizontal',
+      bottom: 0,
+      textStyle: { color: '#64748b' },
+    },
+    series: [
+      {
+        type: 'pie',
+        radius: ['42%', '70%'],
+        center: ['50%', '45%'],
+        avoidLabelOverlap: true,
+        itemStyle: {
+          borderRadius: 8,
+          borderColor: '#fff',
+          borderWidth: 2,
+        },
+        label: {
+          show: true,
+          formatter: '{b}\n{d}%',
+          color: '#475569',
+          fontSize: 12,
+        },
+        emphasis: {
+          label: { show: true, fontWeight: 'bold', fontSize: 14 },
+        },
+        data: categoryData.value.map((item, index) => ({
+          name: item.name,
+          value: item.value,
+          itemStyle: {
+            color: ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'][index],
+          },
+        })),
+      },
+    ],
+  })
+}
+
+const handleResize = () => {
+  trendChart?.resize()
+  pieChart?.resize()
+}
+
+onMounted(async () => {
+  await nextTick()
+  initTrendChart()
+  initPieChart()
+  window.addEventListener('resize', handleResize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
+  trendChart?.dispose()
+  pieChart?.dispose()
+})
 </script>
 
 <style scoped lang="less">
@@ -259,88 +500,104 @@ const totalBrowseCount = computed(() => {
     font-weight: 600;
 }
 
-.home .userCount {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-}
-
-.home .userCount .el-card,
-.home .countD .el-card {
-    border-radius: 18px;
-    overflow: hidden;
+.overview-cards {
+  .overview-card {
+    border-radius: 16px;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
-    background: #ffffff;
-    box-shadow: 0 14px 40px rgba(16, 40, 77, 0.06);
-}
 
-.home .userCount .el-card:hover,
-.home .countD .el-card:hover {
-    transform: translateY(-3px);
-}
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(16, 40, 77, 0.1);
+    }
 
-.home .userCount .el-card {
-    display: flex;
-    align-items: center;
-    padding: 12px 14px;
-    min-height: 100px;
-}
+    :deep(.el-card__body) {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      gap: 16px;
+    }
+  }
 
-.home .userCount .el-card > .el-card__body {
-    padding: 0 !important;
-}
+  .card-left {
+    flex-shrink: 0;
 
-.home .userCount .el-card > .el-card__body,
-.home .userCount .el-card > div {
-    width: 100%;
-}
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #ffffff;
 
-.home .userCount .el-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    color: #ffffff;
-    margin-right: 12px;
-    flex: none;
-    box-shadow: 0 12px 24px rgba(64, 158, 255, 0.14);
-}
+      &.icon-purple {
+        background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+        box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+      }
 
-.home .userCount .el-icon svg {
-    width: 22px;
-    height: 22px;
-}
+      &.icon-blue {
+        background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+      }
 
-.home .userCount p {
-    font-size: 18px;
-    color: #0f1720;
-    margin: 0;
-}
+      &.icon-green {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+      }
 
-.home .userCount .el-card > div {
+      &.icon-orange {
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+      }
+    }
+  }
+
+  .card-right {
     flex: 1;
+    min-width: 0;
+
+    .card-title {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+
+    .card-stats {
+      .today-value {
+        font-size: 13px;
+        color: #94a3b8;
+      }
+    }
+  }
 }
 
-.home .countD {
-    display: grid;
-    gap: 20px;
-}
+.charts-section {
+  .el-card {
+    border-radius: 16px;
 
-.home .countD .el-card {
-    padding: 26px;
-    min-height: 320px;
+    :deep(.el-card__header) {
+      padding: 16px 20px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+  }
+
+  .chart-header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    border-radius: 18px;
-}
+    justify-content: space-between;
 
-.home .countD p {
-    margin: 0;
-    color: #475569;
-    font-size: 18px;
+    span {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+  }
+
+  .chart-container {
+    width: 100%;
+    height: 320px;
+  }
 }
 
 @media (max-width: 992px) {
@@ -349,10 +606,16 @@ const totalBrowseCount = computed(() => {
     }
 
     .home .user,
-    .home .login-info,
-    .home .userCount .el-card,
-    .home .countD .el-card {
+    .home .login-info {
         border-radius: 14px;
+    }
+
+    .overview-cards .overview-card {
+      border-radius: 14px;
+    }
+
+    .charts-section .chart-container {
+      height: 260px;
     }
 }
 
@@ -366,8 +629,8 @@ const totalBrowseCount = computed(() => {
         align-items: flex-start;
     }
 
-    .home .userCount {
-        grid-template-columns: 1fr;
+    .charts-section .chart-container {
+      height: 220px;
     }
 }
 </style>
