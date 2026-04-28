@@ -2,15 +2,22 @@
     <div class="lay-aside">
         <el-menu
             class="el-menu-vertical"
-            active-text-color="#ffd04b"
-            background-color="#2a3545"
-            text-color="#fff"
+            active-text-color="#6366f1"
+            background-color="transparent"
+            text-color="#64748b"
             :collapse="isCollapse"
             router
             >
             <div class="logo-container">
+                <div class="logo-icon" v-show="!isCollapse">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
                 <h3 v-show="!isCollapse" class="logo-text">通用后台</h3>
-                <h3 v-show="isCollapse" class="logo-text">后台</h3>
+                <h3 v-show="isCollapse" class="logo-text-mini">后台</h3>
             </div>
             <el-menu-item
                 v-for="item in noChildren"
@@ -35,15 +42,13 @@
                     </el-icon>
                     <span>{{item.label}}</span>
                 </template>
-                <el-menu-item-group>
-                    <el-menu-item
-                        v-for="subItem in item.children"
-                        :key="subItem.path"
-                        :index="subItem.path"
-                    >
-                        <span>{{subItem.label}}</span>
-                    </el-menu-item>
-                </el-menu-item-group> 
+                <el-menu-item
+                    v-for="subItem in item.children"
+                    :key="subItem.path"
+                    :index="subItem.path"
+                >
+                    <span>{{subItem.label}}</span>
+                </el-menu-item>
             </el-sub-menu>
         </el-menu>
     </div>
@@ -104,20 +109,20 @@ const isCollapse = computed(()=>store.state.isCollapse);
     width: auto;
     height: 100%;
     min-height: 100vh;
-    background-color: #2a3545; /* 保持与菜单背景一致 */
-    box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35); /* 增加侧边栏阴影，提升层次感 */
-    transition: width 0.3s; /* 平滑过渡效果 */
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .el-menu-vertical {
     height: 100%;
-    border-right: none; /* 去除菜单默认的右边框 */
-    padding-top: 12px;
+    border-right: none;
+    padding-top: 0;
     width: 100%;
 }
 
-/* 侧边栏展开时的宽度 */
 .el-menu-vertical:not(.el-menu--collapse) {
     width: 220px;
     min-height: 100vh;
@@ -127,42 +132,86 @@ const isCollapse = computed(()=>store.state.isCollapse);
     width: 64px;
 }
 
+.logo-container {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 16px;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.logo-icon {
+    width: 28px;
+    height: 28px;
+    color: #6366f1;
+    flex-shrink: 0;
+
+    svg {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.logo-text {
+    color: #1f2937;
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    white-space: nowrap;
+    letter-spacing: 1px;
+}
+
+.logo-text-mini {
+    color: #1f2937;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
 .el-menu-vertical.el-menu--collapse :deep(.el-menu-item),
 .el-menu-vertical.el-menu--collapse :deep(.el-sub-menu__title) {
-    justify-content: flex-start;
-    padding: 12px 16px;
+    justify-content: center;
+    padding: 0 20px;
+    height: 48px;
+    line-height: 48px;
+    margin: 2px 8px;
+    border-radius: 8px;
 }
 
 .el-menu-vertical.el-menu--collapse :deep(.el-menu-item) .el-icon,
 .el-menu-vertical.el-menu--collapse :deep(.el-sub-menu__title) .el-icon {
-    margin-right: 10px;
+    margin-right: 0;
+    min-width: 20px;
 }
 
 .el-menu-vertical.el-menu--collapse :deep(.el-menu-item) span,
 .el-menu-vertical.el-menu--collapse :deep(.el-sub-menu__title) span {
-    display: inline;
-    color: #ffffff !important;
+    display: none;
 }
 
-.el-menu-vertical :deep(.el-menu-item) span,
-.el-menu-vertical :deep(.el-sub-menu__title) span {
-    color: #ffffff !important;
-}
-
-/* 优化图标和文字的间距 */
 .el-menu-vertical :deep(.el-menu-item),
 .el-menu-vertical :deep(.el-sub-menu__title) {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
-    min-height: 48px;
+    gap: 0;
+    padding: 0 20px;
+    height: 44px;
+    line-height: 44px;
+    margin: 2px 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    color: #64748b !important;
 }
 
 .el-menu-vertical :deep(.el-menu-item) .el-icon,
 .el-menu-vertical :deep(.el-sub-menu__title) .el-icon {
     margin-right: 10px;
     min-width: 24px;
+    font-size: 18px;
 }
 
 .el-menu-vertical :deep(.el-menu-item) .el-icon svg,
@@ -172,34 +221,71 @@ const isCollapse = computed(()=>store.state.isCollapse);
 }
 
 .el-menu-vertical :deep(.el-menu-item) span,
-.el-menu-vertical :deep(.el-sub-menu__title) span,
-.el-menu-vertical.el-menu--collapse :deep(.el-menu-item) span,
-.el-menu-vertical.el-menu--collapse :deep(.el-sub-menu__title) span {
-    color: #ffffff !important;
+.el-menu-vertical :deep(.el-sub-menu__title) span {
+    color: #64748b !important;
+    font-size: 14px;
+    font-weight: 400;
 }
 
-/* 顶部 Logo 区域样式优化 */
-.logo-container {
-    height: 60px;
-    line-height: 60px;
-    text-align: center;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.logo-text {
-    color: #fff;
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-/* 悬停时的背景色优化 */
 .el-menu-vertical :deep(.el-menu-item:hover),
 .el-menu-vertical :deep(.el-sub-menu__title:hover) {
-    background-color: #1f2733 !important;
+    background-color: #f5f3ff !important;
+    color: #6366f1 !important;
+}
+
+.el-menu-vertical :deep(.el-menu-item:hover) span,
+.el-menu-vertical :deep(.el-sub-menu__title:hover) span {
+    color: #6366f1 !important;
+}
+
+.el-menu-vertical :deep(.el-menu-item.is-active) {
+    background: #eef2ff !important;
+    color: #6366f1 !important;
+    position: relative;
+}
+
+.el-menu-vertical :deep(.el-menu-item.is-active)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 20px;
+    background: #6366f1;
+    border-radius: 0 3px 3px 0;
+}
+
+.el-menu-vertical :deep(.el-menu-item.is-active) span {
+    color: #6366f1 !important;
+    font-weight: 500;
+}
+
+.el-menu-vertical :deep(.el-sub-menu.is-active > .el-sub-menu__title) {
+    color: #6366f1 !important;
+}
+
+.el-menu-vertical :deep(.el-sub-menu.is-active > .el-sub-menu__title) span {
+    color: #6366f1 !important;
+}
+
+.el-menu-vertical :deep(.el-menu-item-group) {
+    background: #fafafa;
+}
+
+.el-menu-vertical :deep(.el-menu-item-group__title) {
+    display: none;
+}
+
+.el-menu-vertical :deep(.el-menu-item-group .el-menu-item) {
+    padding-left: 52px !important;
+    height: 40px;
+    line-height: 40px;
+    font-size: 13px;
+    margin: 1px 8px;
+}
+
+.el-menu-vertical :deep(.el-sub-menu__icon-arrow) {
+    color: #94a3b8;
 }
 </style>

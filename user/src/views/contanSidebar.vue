@@ -1,16 +1,8 @@
 <template>
   <div class="a-card">
     <a-card style="box-shadow: 0 2px 8px rgba(0,0,0,0.15); margin: 20px; width: 300px;">
-      <template #cover>
-        <img
-          alt="example"
-          src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-        />
-      </template>
       <template #actions>
-        <setting-outlined key="setting" @click="setting"/>
-        <edit-outlined key="edit" />
-        <ellipsis-outlined key="ellipsis" />
+        <GithubOutlined />
       </template>
       <a-card-meta title="user.name" description="user.description">
         <template #avatar>
@@ -30,13 +22,11 @@
 </template>
 <script >
 import { ref } from 'vue';
-import { SettingOutlined, EditOutlined, EllipsisOutlined} from '@ant-design/icons-vue';
+import { GithubOutlined } from '@ant-design/icons-vue';
 
 export default {
   components: {
-    SettingOutlined,
-    EditOutlined,
-    EllipsisOutlined,
+    GithubOutlined
   },
   setup() {
     const tagsData = ref([

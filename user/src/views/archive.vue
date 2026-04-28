@@ -1,19 +1,18 @@
 <template>
     <div class="page-container">
-      <a-input
-        v-model="value"
-        placeholder="input search text"
-        size="small"
-        class="search-bar"
-        style="width: 300px;"
-      />
       <div class="container">
-        <h2 class="title-row">
+        <div class="title-row">
           <div class="title-left">Article archiving</div>
           <div class="title-right">文章归档</div>
-        </h2>
+          <a-input
+            v-model:value="value"
+            placeholder="请输入搜索内容（日期或标题）"
+            size="small"
+            class="search-bar"
+          />
+        </div>
         <a-collapse>
-            <a-collapse-panel v-for="item in archiveTime" :key="item" :header="item">
+            <a-collapse-panel v-for="item in filteredAechiveTime" :key="item" :header="item">
                 <template v-for="file in filteredArchiveFile" :key="file.id">
                     <p v-if="file.time === item"> {{ file.title }} </p>
                 </template>
@@ -65,6 +64,12 @@ const filteredArchiveFile = computed(() => {
   );
 })
 
+const filteredAechiveTime = computed (() =>{
+  if(!value.value) return archiveTime.value;
+  const times = filteredArchiveFile.value.map(item => item.time);
+  return [...new Set(times)]
+})
+
 </script>
 
 <style scoped>
@@ -74,8 +79,8 @@ const filteredArchiveFile = computed(() => {
 
 .title-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 16px;
   margin: 24px 0;
   padding: 0 24px;
 }
@@ -88,6 +93,12 @@ const filteredArchiveFile = computed(() => {
 .title-right {
   font-size: 24px;
   font-weight: bold;
+  flex: 1;
+}
+
+.search-bar {
+  width: 240px;
+  margin-left: auto;
 }
 
 .container {

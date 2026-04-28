@@ -1,24 +1,68 @@
-<!-- 角色管理 -->
 <template>
-    <div class="roleInfo">
-        <el-card>
-            <div class="card-header">
-                <h1>角色管理</h1>
-                <span>
-                <el-button type="primary">添加角色</el-button>
-                </span>
-                <span class="search-input">
-                    <input v-model="value" placeholder="请输入角色名称或权限进行搜索" class="search-input"/>
-                </span>
+    <div class="role-management">
+        <div class="page-header">
+            <div class="header-left">
+                <h1 class="page-title">角色管理</h1>
+                <p class="page-desc">管理系统中的角色与权限配置</p>
             </div>
-       
-            <el-table style="width: 100%" :data="filteredRoles">
-                <el-table-column prop="id" label="ID"/>
-                <el-table-column prop="prop" label="角色名称"/>
-                <el-table-column prop="role" label="权限"/>
-                <el-table-column prop="prop" label="操作">
+        </div>
+
+        <el-card class="table-card" shadow="never">
+            <template #header>
+                <div class="card-header">
+                    <el-button type="primary" class="add-btn">
+                        <el-icon><Plus /></el-icon>
+                        添加角色
+                    </el-button>
+                    <div class="search-area">
+                        <el-input
+                            v-model="value"
+                            placeholder="搜索角色名称或权限"
+                            :prefix-icon="Search"
+                            clearable
+                            class="search-input"
+                        />
+                    </div>
+                </div>
+            </template>
+
+            <el-table
+                style="width: 100%"
+                :data="filteredRoles"
+                :header-cell-style="{ background: '#f8fafc', color: '#475569', fontWeight: '600', fontSize: '13px' }"
+                :row-style="{ fontSize: '14px' }"
+                stripe
+            >
+                <el-table-column prop="id" label="ID" width="80">
                     <template #default="scope">
-                        <el-button type="danger" @click="deleteRole(scope.row)">删除</el-button>
+                        <span class="id-badge">{{ scope.row.id }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="prop" label="角色名称" min-width="160">
+                    <template #default="scope">
+                        <div class="role-name-cell">
+                            <div class="role-icon" :class="getRoleClass(scope.row.prop)">
+                                {{ scope.row.prop.charAt(0).toUpperCase() }}
+                            </div>
+                            <span class="role-name">{{ scope.row.prop }}</span>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="role" label="权限描述" min-width="260">
+                    <template #default="scope">
+                        <span class="role-desc">{{ scope.row.role }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="120" fixed="right">
+                    <template #default="scope">
+                        <el-button
+                            type="danger"
+                            size="small"
+                            link
+                            @click="deleteRole(scope.row)"
+                        >
+                            删除
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -27,7 +71,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
+import { Plus, Search } from '@element-plus/icons-vue'
 
 const value = ref('');
 const keyword = computed(() => value.value.trim().toLowerCase());
@@ -39,6 +84,16 @@ const filteredRoles = computed(() => {
         role.role.toLowerCase().includes(keyword.value)
     )
 });
+
+const getRoleClass = (prop) => {
+    const map = {
+        admin: 'role-admin',
+        user: 'role-user',
+        editor: 'role-editor',
+        author: 'role-author'
+    }
+    return map[prop] || 'role-default'
+}
 
 const deleteRole = (role) => {
     const index = roles.value.findIndex(item => item.id === role.id)
@@ -71,89 +126,147 @@ const roles = ref([
 ])
 </script>
 
-<style scopeed>
-.search-input {
-    flex: 0 1 320px;
-    min-width: 200px;
-}
-
-.search-input .el-input {
-    width: 100%;
-}
-
-.search-input .el-input__wrapper {
-    border-radius: 8px;
-    box-shadow: 0 0 0 1px #dcdfe6 inset;
-    transition: box-shadow 0.25s;
-}
-
-.search-input .el-input__wrapper:hover {
-    box-shadow: 0 0 0 1px #c0c4cc inset;
-}
-
-.search-input .el-input__wrapper.is-focus {
-    box-shadow: 0 0 0 1px #409eff inset, 0 0 0 3px rgba(64, 158, 255, 0.1);
-}
-
-.card-header .el-button--primary {
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: 500;
-    letter-spacing: 1px;
-    transition: all 0.25s;
-}
-
-.card-header .el-button--primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(64, 158, 255, 0.35);
-}
-.roleInfo {
-    margin-top: 20px;
+<style scoped lang="less">
+.role-management {
     padding: 20px;
 }
 
-.roleForm {
-    padding: 0;
+.page-header {
+    margin-bottom: 20px;
+
+    .header-left {
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 4px 0;
+        }
+
+        .page-desc {
+            font-size: 14px;
+            color: #94a3b8;
+            margin: 0;
+        }
+    }
 }
 
-.reset-btn {
+.table-card {
+    border-radius: 16px;
+    border: none;
+
+    :deep(.el-card__header) {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    .add-btn {
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+}
+
+.search-area {
+    .search-input {
+        width: 260px;
+
+        :deep(.el-input__wrapper) {
+            border-radius: 8px;
+            box-shadow: 0 0 0 1px #e5e7eb inset;
+            transition: all 0.25s;
+
+            &:hover {
+                box-shadow: 0 0 0 1px #c4b5fd inset;
+            }
+
+            &.is-focus {
+                box-shadow: 0 0 0 1px #8b5cf6 inset, 0 0 0 3px rgba(139, 92, 246, 0.1);
+            }
+        }
+    }
+}
+
+.id-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
     border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    border: 1px solid #dcdfe6;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
 }
 
-.reset-btn:hover {
-    border-color: #409eff;
-    color: #409eff;
-    transform: translateY(-1px);
-}
-.el-form-item {
-    margin-bottom: 0;
+.role-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .role-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+        color: #fff;
+        flex-shrink: 0;
+
+        &.role-admin {
+            background: #f59e0b;
+        }
+
+        &.role-user {
+            background: #3b82f6;
+        }
+
+        &.role-editor {
+            background: #10b981;
+        }
+
+        &.role-author {
+            background: #6366f1;
+        }
+
+        &.role-default {
+            background: #64748b;
+        }
+    }
+
+    .role-name {
+        font-weight: 500;
+        color: #1f2937;
+    }
 }
 
-.el-form-item__label {
-    font-weight: 500;
-    color: #606266;
+.role-desc {
+    color: #64748b;
+    font-size: 13px;
 }
 
-.el-card {
-    border-radius: 8px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-}
-
-.el-table {
+:deep(.el-table) {
+    --el-table-border-color: #f1f5f9;
     border-radius: 8px;
     overflow: hidden;
-    margin-top: 16px;
-}
 
-.el-button + .el-button {
-    margin-left: 0;
-}
+    th.el-table__cell {
+        border-bottom: 1px solid #e5e7eb;
+    }
 
-.el-card .el-button {
-    margin-bottom: 16px;
+    .el-table__row:hover > td {
+        background: #faf5ff !important;
+    }
 }
 </style>

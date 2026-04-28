@@ -1,20 +1,14 @@
 <template>
     <el-col class="home">
-        <el-row :span="8">
-            <el-card shadow="hover">
-               <div class="user">
-                    <img src="" alt="user-avatar" />
-                    <div class="user-info">
-                        <p class="name">Admin</p>
-                        <p class="access">管理员</p>
-                    </div>
-                </div>
-                <div class="login-info">
-                    <p>上次登入时间: <span>2026-04-26</span></p>
-                    <p>上次登入IP: <span>192.168.1.1</span></p>
-                </div>
-            </el-card>
-        </el-row>
+        <div class="welcome-banner">
+            <div class="welcome-text">
+                <h2>欢迎回来, Admin 👋</h2>
+            </div>
+            <div class="welcome-date">
+                <el-icon><Calendar /></el-icon>
+                <span>{{ currentDate }}</span>
+            </div>
+        </div>
 
         <el-row :gutter="20" class="overview-cards">
       <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
@@ -27,9 +21,11 @@
             </div>
           </div>
           <div class="card-right">
-            <div class="card-title">浏览量: {{ todayBrowseCount }}</div>
+            <div class="card-title">浏览量</div>
+            <div class="card-value">{{ todayBrowseCount }}</div>
             <div class="card-stats">
-              <span class="today-value">本月: {{ totalBrowseCount }}</span>
+              <span class="trend-label">本月</span>
+              <span class="trend-value">{{ totalBrowseCount }}</span>
             </div>
           </div>
         </el-card>
@@ -45,9 +41,11 @@
             </div>
           </div>
           <div class="card-right">
-            <div class="card-title">访客量: {{ visitorCount }}</div>
+            <div class="card-title">访客量</div>
+            <div class="card-value">{{ visitorCount }}</div>
             <div class="card-stats">
-              <span class="today-value">本月: {{ todayVisitorCount }}</span>
+              <span class="trend-label">本月</span>
+              <span class="trend-value">{{ todayVisitorCount }}</span>
             </div>
           </div>
         </el-card>
@@ -63,9 +61,11 @@
             </div>
           </div>
           <div class="card-right">
-            <div class="card-title">评论数: {{ commentCount }}</div>
+            <div class="card-title">评论数</div>
+            <div class="card-value">{{ commentCount }}</div>
             <div class="card-stats">
-              <span class="today-value">本月: {{ todayCommentCount }}</span>
+              <span class="trend-label">本月</span>
+              <span class="trend-value">{{ todayCommentCount }}</span>
             </div>
           </div>
         </el-card>
@@ -81,9 +81,11 @@
             </div>
           </div>
           <div class="card-right">
-            <div class="card-title">用户数: {{ userCount }}</div>
+            <div class="card-title">用户数</div>
+            <div class="card-value">{{ userCount }}</div>
             <div class="card-stats">
-              <span class="today-value">本月: {{ todayUserCount }}</span>
+              <span class="trend-label">本月</span>
+              <span class="trend-value">{{ todayUserCount }}</span>
             </div>
           </div>
         </el-card>
@@ -121,7 +123,7 @@
 
 <script setup>
 import { computed, ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { User, ChatDotRound, UserFilled, View } from '@element-plus/icons-vue'
+import { User, ChatDotRound, UserFilled, View, Calendar } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
 
 const browseCountData = ref([
@@ -210,6 +212,16 @@ const commentCountData = ref([
 
 const userData = ref({ today: 5, monthly: 38 })
 
+const currentDate = computed(() => {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = now.getMonth() + 1
+  const day = now.getDate()
+  const weekDays = ['日', '一', '二', '三', '四', '五', '六']
+  const weekDay = weekDays[now.getDay()]
+  return `${year}年${month}月${day}日 星期${weekDay}`
+})
+
 const getCurrentTimeStr = () => {
   const now = new Date()
   return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
@@ -251,6 +263,7 @@ const pieChartRef = ref(null)
 let trendChart = null
 let pieChart = null
 
+//echart图表
 const fetchTrendData = () => {
   if (!trendChart) return
   if (trendType.value === 'daily') {
@@ -289,12 +302,16 @@ const initTrendChart = () => {
       borderColor: '#e5e7eb',
       borderWidth: 1,
       textStyle: { color: '#334155' },
+      padding: [12, 16],
     },
     legend: {
       data: ['浏览量', '访客量'],
       top: 0,
       right: 0,
-      textStyle: { color: '#64748b' },
+      textStyle: { color: '#64748b', fontSize: 12 },
+      itemWidth: 16,
+      itemHeight: 3,
+      itemGap: 20,
     },
     grid: {
       left: '3%',
@@ -308,14 +325,15 @@ const initTrendChart = () => {
       data: dates,
       boundaryGap: false,
       axisLine: { lineStyle: { color: '#e5e7eb' } },
-      axisLabel: { color: '#64748b' },
+      axisLabel: { color: '#94a3b8', fontSize: 11 },
+      axisTick: { show: false },
     },
     yAxis: {
       type: 'value',
       axisLine: { show: false },
       axisTick: { show: false },
-      splitLine: { lineStyle: { color: '#f1f5f9' } },
-      axisLabel: { color: '#64748b' },
+      splitLine: { lineStyle: { color: '#f1f5f9', type: 'dashed' } },
+      axisLabel: { color: '#94a3b8', fontSize: 11 },
     },
     series: [
       {
@@ -325,10 +343,11 @@ const initTrendChart = () => {
         data: browseValues,
         lineStyle: { width: 2.5, color: '#8b5cf6' },
         itemStyle: { color: '#8b5cf6' },
+        showSymbol: false,
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(139,92,246,0.25)' },
-            { offset: 1, color: 'rgba(139,92,246,0.02)' },
+            { offset: 0, color: 'rgba(139,92,246,0.2)' },
+            { offset: 1, color: 'rgba(139,92,246,0.01)' },
           ]),
         },
       },
@@ -339,10 +358,11 @@ const initTrendChart = () => {
         data: visitorValues,
         lineStyle: { width: 2.5, color: '#3b82f6' },
         itemStyle: { color: '#3b82f6' },
+        showSymbol: false,
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(59,130,246,0.25)' },
-            { offset: 1, color: 'rgba(59,130,246,0.02)' },
+            { offset: 0, color: 'rgba(59,130,246,0.2)' },
+            { offset: 1, color: 'rgba(59,130,246,0.01)' },
           ]),
         },
       },
@@ -361,31 +381,41 @@ const initPieChart = () => {
       borderColor: '#e5e7eb',
       borderWidth: 1,
       textStyle: { color: '#334155' },
+      padding: [12, 16],
     },
     legend: {
       orient: 'horizontal',
       bottom: 0,
-      textStyle: { color: '#64748b' },
+      textStyle: { color: '#64748b', fontSize: 12 },
+      itemWidth: 10,
+      itemHeight: 10,
+      itemGap: 16,
     },
     series: [
       {
         type: 'pie',
-        radius: ['42%', '70%'],
+        radius: ['45%', '72%'],
         center: ['50%', '45%'],
         avoidLabelOverlap: true,
         itemStyle: {
           borderRadius: 8,
           borderColor: '#fff',
-          borderWidth: 2,
+          borderWidth: 3,
         },
         label: {
           show: true,
           formatter: '{b}\n{d}%',
           color: '#475569',
           fontSize: 12,
+          lineHeight: 18,
         },
         emphasis: {
           label: { show: true, fontWeight: 'bold', fontSize: 14 },
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.15)',
+          },
         },
         data: categoryData.value.map((item, index) => ({
           name: item.name,
@@ -420,9 +450,9 @@ onBeforeUnmount(() => {
 
 <style scoped lang="less">
 .home {
-    margin: 16px;
+    margin: 20px;
     display: grid;
-    gap: 18px;
+    gap: 20px;
     color: #334155;
 }
 
@@ -431,89 +461,59 @@ onBeforeUnmount(() => {
     min-width: 0;
 }
 
-.home > .el-row:first-of-type {
-    width: 100%;
-}
-
-.home > .el-row:first-of-type .el-card {
-    width: 100%;
-}
-
-.home .user {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    padding: 18px;
-    border-radius: 16px;
+.welcome-banner {
     background: #ffffff;
-    box-shadow: 0 10px 28px rgba(16, 40, 77, 0.05);
-    gap: 16px;
-}
-
-.home .user img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    background: #eef5ff;
-    border: 2px solid rgba(64, 158, 255, 0.16);
-}
-
-.home .user-info {
-    flex: 1;
-}
-
-.home .user-info p {
-    margin: 0;
-}
-
-.home .user-info .name {
-    color: #1f2937;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.home .user-info .access {
-    color: #64748b;
-    margin-top: 6px;
-}
-
-.home .login-info {
-    margin-top: 14px;
-    padding: 18px;
     border-radius: 16px;
-    background: #ffffff;
-    box-shadow: 0 10px 28px rgba(16, 40, 77, 0.05);
-}
-
-.home .login-info p {
-    line-height: 32px;
-    font-size: 14px;
-    color: #475569;
-    margin: 0;
+    padding: 28px 32px;
     display: flex;
     justify-content: space-between;
-}
+    align-items: center;
+    color: #1f2937;
+    border: 1px solid #e5e7eb;
 
-.home .login-info span {
-    color: #0f172a;
-    font-weight: 600;
+    .welcome-text {
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0 0 6px 0;
+            color: #1f2937;
+        }
+
+        p {
+            font-size: 14px;
+            color: #94a3b8;
+            margin: 0;
+        }
+    }
+
+    .welcome-date {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #f8fafc;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        color: #64748b;
+        border: 1px solid #e5e7eb;
+    }
 }
 
 .overview-cards {
   .overview-card {
     border-radius: 16px;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border: none;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
 
     &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 40px rgba(16, 40, 77, 0.1);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
     }
 
     :deep(.el-card__body) {
       display: flex;
       align-items: center;
-      padding: 16px 20px;
+      padding: 20px;
       gap: 16px;
     }
   }
@@ -522,33 +522,32 @@ onBeforeUnmount(() => {
     flex-shrink: 0;
 
     .card-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
-      color: #ffffff;
+      font-size: 26px;
 
       &.icon-purple {
-        background: linear-gradient(135deg, #8b5cf6, #a78bfa);
-        box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+        background: #f5f3ff;
+        color: #7c3aed;
       }
 
       &.icon-blue {
-        background: linear-gradient(135deg, #3b82f6, #60a5fa);
-        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        background: #eff6ff;
+        color: #2563eb;
       }
 
       &.icon-green {
-        background: linear-gradient(135deg, #10b981, #34d399);
-        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        background: #ecfdf5;
+        color: #059669;
       }
 
       &.icon-orange {
-        background: linear-gradient(135deg, #f59e0b, #fbbf24);
-        box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+        background: #fffbeb;
+        color: #d97706;
       }
     }
   }
@@ -558,15 +557,34 @@ onBeforeUnmount(() => {
     min-width: 0;
 
     .card-title {
-      font-size: 14px;
-      color: #64748b;
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 4px;
+      font-weight: 400;
+    }
+
+    .card-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1f2937;
+      line-height: 1.2;
       margin-bottom: 4px;
     }
 
     .card-stats {
-      .today-value {
-        font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .trend-label {
+        font-size: 12px;
         color: #94a3b8;
+      }
+
+      .trend-value {
+        font-size: 13px;
+        color: #64748b;
+        font-weight: 500;
       }
     }
   }
@@ -575,6 +593,7 @@ onBeforeUnmount(() => {
 .charts-section {
   .el-card {
     border-radius: 16px;
+    border: none;
 
     :deep(.el-card__header) {
       padding: 16px 20px;
@@ -592,11 +611,19 @@ onBeforeUnmount(() => {
       font-weight: 600;
       color: #1f2937;
     }
+
+    :deep(.el-radio-group) {
+      .el-radio-button__inner {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 12px;
+      }
+    }
   }
 
   .chart-container {
     width: 100%;
-    height: 320px;
+    height: 340px;
   }
 }
 
@@ -605,9 +632,11 @@ onBeforeUnmount(() => {
         margin: 16px;
     }
 
-    .home .user,
-    .home .login-info {
-        border-radius: 14px;
+    .welcome-banner {
+        padding: 20px 24px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
     }
 
     .overview-cards .overview-card {
@@ -615,7 +644,7 @@ onBeforeUnmount(() => {
     }
 
     .charts-section .chart-container {
-      height: 260px;
+      height: 280px;
     }
 }
 
@@ -624,13 +653,12 @@ onBeforeUnmount(() => {
         gap: 16px;
     }
 
-    .home .user {
-        flex-direction: column;
-        align-items: flex-start;
+    .welcome-banner .welcome-text h2 {
+      font-size: 18px;
     }
 
     .charts-section .chart-container {
-      height: 220px;
+      height: 240px;
     }
 }
 </style>
