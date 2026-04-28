@@ -119,28 +119,23 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted} from 'vue'
 import { Plus, Search } from '@element-plus/icons-vue'
 import UserDrawer from '@/compents/dialog.vue'
+import request from '@/utils/request'
 
 const value = ref('');
+const tableData= ref([])
 const keyword = computed(() => value.value.trim());
-const tableData = ref([
-    {
-        id: 1,
-        prop: '张三',
-        role: '管理员',
-        email: 'zhangsan@example.com',
-        status: 'enabled'
-    },
-    {
-        id: 2,
-        prop: '李四',
-        role: '普通用户',
-        email: 'lisi@example.com',
-        status: 'disabled'
+const table = async () =>{
+    try{
+        const ref = await request.get('/mock/tableData.json')
+        tableData.value = ref
+    }catch(error){
+        console('错误',error)
     }
-])
+}
+
 const filtersData = computed(() => {
     if (!keyword.value) return tableData.value;
     return tableData.value.filter(item => {
@@ -166,8 +161,6 @@ const openEditDrawer = (user) => {
         email: user.email,
         region: user.role,
         status: user.status,
-        phone: user.phone || '',
-        department: user.department || ''
     })
     dialogVisible.value = true
 }
@@ -182,8 +175,6 @@ const onConfirm = (formData) => {
                 role: formData.region,
                 email: formData.email,
                 status: formData.status,
-                phone: formData.phone,
-                department: formData.department
             }
         }
     } else {
@@ -196,8 +187,6 @@ const onConfirm = (formData) => {
             role: formData.region,
             email: formData.email,
             status: formData.status,
-            phone: formData.phone,
-            department: formData.department
         })
     }
 }
@@ -208,6 +197,10 @@ const deleteUser = (user) => {
         tableData.value.splice(index, 1)
     }
 }
+
+onMounted(() => {
+    table()
+})
 </script>
 
 <style scoped lang="less">

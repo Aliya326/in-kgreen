@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "prop": "张三",
+        "role": "管理员",
+        "email": "zhangsan@example.com",
+        "status": "enabled"
+    },
+    {
+        "id": 2,
+        "prop": "李四",
+        "role": "普通用户",
+        "email": "lisi@example.com",
+        "status": "disabled"
+    }
+]

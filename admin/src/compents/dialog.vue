@@ -69,24 +69,6 @@
                             </el-radio>
                         </el-radio-group>
                     </el-form-item>
-
-                    <el-divider content-position="left">其他信息</el-divider>
-
-                    <el-form-item label="手机号" prop="phone">
-                        <el-input
-                            v-model="editForm.phone"
-                            placeholder="请输入手机号"
-                            clearable
-                        />
-                    </el-form-item>
-
-                    <el-form-item label="部门" prop="department">
-                        <el-input
-                            v-model="editForm.department"
-                            placeholder="请输入部门"
-                            clearable
-                        />
-                    </el-form-item>
                 </el-form>
             </div>
         </div>
@@ -131,8 +113,6 @@ const editForm = ref({
     email: '',
     region: '',
     status: '',
-    phone: '',
-    department: ''
 })
 
 const formRules = ref({
@@ -147,9 +127,6 @@ const formRules = ref({
     region: [
         { required: true, message: '请选择权限', trigger: 'change' }
     ],
-    phone: [
-        { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号格式', trigger: 'blur' }
-    ]
 })
 
 const editFormRef = ref(null)
@@ -162,8 +139,6 @@ const setFormData = (data) => {
         email: data.email || '',
         region: data.region || '',
         status: data.status || '',
-        phone: data.phone || '',
-        department: data.department || ''
     }
 }
 
@@ -173,8 +148,6 @@ const resetForm = () => {
         email: '',
         region: '',
         status: '',
-        phone: '',
-        department: ''
     }
 }
 

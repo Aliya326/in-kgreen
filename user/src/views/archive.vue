@@ -91,7 +91,7 @@ const filteredAechiveTime = computed (() =>{
 }
 
 .title-right {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   flex: 1;
 }

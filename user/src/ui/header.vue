@@ -46,25 +46,17 @@ const items = ref([
             key: 'setting:1',
           },
           {
-            label: 'Option 2',
+            label: '分类2',
+            title:'',
             key: 'setting:2',
           },
-        ],
-      },
-      {
-        type: 'group',
-        label: 'Item 2',
-        children: [
           {
-            label: 'Option 3',
-            key: 'setting:3',
-          },
-          {
-            label: 'Option 4',
-            key: 'setting:4',
-          },
+            label:'分类3',
+            title:'',
+            key:'',
+          }
         ],
-      },
+      }
     ],
   },
   {
