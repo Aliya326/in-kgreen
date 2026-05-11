@@ -53,9 +53,10 @@ export default {
 
 <style>
 .a-card {
-    height: auto;
+    height: 200px;
+    /*粘性定位，固定在顶部，不随内容滚动 */
     position: sticky;
-    top: 66px;
+    /*flex-shrink: 0;使卡片不缩放，保持固定高度*/
     flex-shrink: 0;
 }
 </style> 

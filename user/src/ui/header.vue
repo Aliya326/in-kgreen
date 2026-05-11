@@ -1,21 +1,28 @@
 <template>
   <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" class="header-menu" 
-  @click="handleClick"
-  />
+  @click="handleClick"/>
 </template>
-
 <script setup>
-import { h, ref } from 'vue';
-import { HomeOutlined, FolderOutlined, InboxOutlined } from '@ant-design/icons-vue';
+import { h, ref, computed, nextTick } from 'vue';
+import { HomeOutlined, FolderOutlined, InboxOutlined, SearchOutlined } from '@ant-design/icons-vue';
+import { Input } from 'ant-design-vue';
 import router from '@/router'
 
 const current = ref(['home']);
+const isSearching = ref(false);
 //需要访问的是一个对象，需要通过 e.key 获取点击的菜单 key，而不是直接访问 item.path
 const handleClick = (e) => {
-    const key = e.key
-      router.push(key)
+    if (e.key === 'search') {
+      isSearching.value = true;
+      nextTick(() => {
+      const inputEl = document.querySelector('.ant-input');
+      inputEl?.focus();
+    });
+      return;
+    } 
+      router.push(e.key)
 }
-const items = ref([
+const items = computed(() => [
   {
     key: 'home',
     icon: () => h(HomeOutlined),
@@ -65,6 +72,22 @@ const items = ref([
       label: '关于',
     title: '关于',
   },
+  {
+    key: 'search',
+    icon: () => h(SearchOutlined),
+    label: isSearching.value
+      ? h(Input, {
+          placeholder: '输入关键词...',
+          autofocus: true,
+          onBlur: () => { isSearching.value = false },
+          onKeydown: (e) => {
+            if (e.key === 'Enter') { /* 执行搜索逻辑 */ isSearching.value = false }
+          },
+          style: { width: '160px' }
+        })
+      : '搜索',
+    title: '搜索',
+  }
 ]);
 </script>
 <style scoped>
@@ -77,5 +100,8 @@ const items = ref([
     z-index: 1000;
     display: flex;
     justify-content: center;
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.75);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.06);
 }
 </style>  

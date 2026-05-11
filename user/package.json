@@ -10,17 +10,11 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
-    "@base-ui/react": "^1.4.1",
     "@fontsource-variable/geist": "^5.2.8",
     "@tailwindcss/vite": "^4.2.4",
     "ant-design-vue": "^4.2.6",
     "axios": "^1.15.2",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "element-plus": "^2.13.7",
-    "lucide-react": "^1.8.0",
     "pinia": "^3.0.4",
-    "shadcn": "^4.4.0",
     "vue": "^3.5.31",
     "vue-axios": "^3.5.2",
     "vue-router": "^5.0.4"
