@@ -1,8 +1,8 @@
 <template>
   <div class="a-card">
-    <a-card style="box-shadow: 0 2px 8px rgba(0,0,0,0.15); margin: 20px; width: 300px;">
+    <a-card style="box-shadow: 0 2px 8px rgba(0,0,0,0.15); margin: 0 20px 20px 20px; width: 300px;">
       <template #actions>
-        <GithubOutlined />
+        <GithubOutlined @click="handleClick" />
       </template>
       <a-card-meta title="user.name" description="user.description">
         <template #avatar>
@@ -46,7 +46,10 @@ export default {
   methods: {
     setting() {
         console.log('setting');
-    }
+    },
+    handleClick() {
+        window.open('https://github.com/', '_blank');
+    },
   }
 }
 </script>

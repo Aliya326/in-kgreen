@@ -10,6 +10,7 @@ import router from '@/router'
 
 const current = ref(['home']);
 const isSearching = ref(false);
+const keyword = ref('');
 //需要访问的是一个对象，需要通过 e.key 获取点击的菜单 key，而不是直接访问 item.path
 const handleClick = (e) => {
     if (e.key === 'search') {
@@ -20,7 +21,7 @@ const handleClick = (e) => {
     });
       return;
     } 
-      router.push(e.key)
+      router.push({ name: e.key })
 }
 const items = computed(() => [
   {
@@ -38,33 +39,11 @@ const items = computed(() => [
     path: '/archive',
   },
   {
-    key: 'sub1',
+    key: 'category',
     icon: () => h(FolderOutlined),
     label: '分类',
     title: '分类',
-    children: [
-      {
-        type: 'group',
-        label: 'Item 1',
-        children: [
-          {
-            label: '分类1',
-            title: '分类1',
-            key: 'setting:1',
-          },
-          {
-            label: '分类2',
-            title:'',
-            key: 'setting:2',
-          },
-          {
-            label:'分类3',
-            title:'',
-            key:'',
-          }
-        ],
-      }
-    ],
+    path: '/category',
   },
   {
     key: 'about',
@@ -73,15 +52,23 @@ const items = computed(() => [
     title: '关于',
   },
   {
+    //全局搜索功能
     key: 'search',
     icon: () => h(SearchOutlined),
     label: isSearching.value
       ? h(Input, {
+        'onUpdate:value': (val) => {
+          keyword.value = val
+        },
           placeholder: '输入关键词...',
           autofocus: true,
           onBlur: () => { isSearching.value = false },
           onKeydown: (e) => {
-            if (e.key === 'Enter') { /* 执行搜索逻辑 */ isSearching.value = false }
+            if (e.key === 'Enter') {
+              keyword.value = e.target.value.trim()
+              router.push({ name: 'goableSearch', query: { keyword: keyword.value } });
+              isSearching.value = false 
+            }
           },
           style: { width: '160px' }
         })

@@ -20,9 +20,24 @@ const router = createRouter({
             component:()=>import("@/views/archive.vue")
           },
           {
+            path:"/atPages/:id",
+            name:"atPages",
+            component:()=>import("@/views/atPages.vue")
+          },
+          {
             path:"/about",
             name:"about",
             component:()=>import("@/about.vue")
+          },
+          {
+            path:"/goableSearch",
+            name:"goableSearch",
+            component:()=>import("@/views/goableSearch.vue")
+          },
+          {
+            path:"/category",
+            name:"category",
+            component:()=>import("@/views/category.vue")
           }
         ]
       },
@@ -30,7 +45,8 @@ const router = createRouter({
         path:"/:pathMatch(.*)*",
         name:"not-found",
         component:()=>import("@/404.vue")
-      }
+      },
+
     ]
 })
 

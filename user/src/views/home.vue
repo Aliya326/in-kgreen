@@ -1,9 +1,17 @@
 <template>
+  <div class="home">
     <div class="page-wrapper">
+      <div class="content-header">
+        <content-header/>
+      </div>
       <div class="main-content">
         <a-row :gutter="[12, 12]">
-          <a-col :span="8" v-for="item in area1" :key="item.id">
-            <a-card class="card" :loading="loading">
+          <a-col :span="6" v-for="item in area1" :key="item.id">
+            <a-card class="card" 
+            hoverable
+            :loading="loading"
+            @click="handlePage(item)"
+            >
               <template #cover>
                   <a-image :src="item.cover_image" :preview="false"/>
               </template>
@@ -15,17 +23,17 @@
           </a-col>
         </a-row>
       </div>
-      <div class="sidebar">
-        <container/>
-      </div>
     </div>
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import container from '@/components/contanSidebar.vue'
+import { useRouter } from 'vue-router'
 import request from '@/utils/request'
+import contentHeader from '@/components/contentHeader.vue'
 
+const router = useRouter()
 const area1 = ref([])
 const loading = ref(true)
 const fetchData = async () => {
@@ -39,28 +47,37 @@ const fetchData = async () => {
         loading.value = false
     }
 }
+//点击卡片跳转详情页,传数据到atPages.vue，并执行渲染
+const handlePage = (item) => {
+  router.push(`/atPages/${item.id}`)
+}
 
+//在组件挂载完成后获取数据
 onMounted(() => {
     fetchData()
 })
 
 </script>
 <style scoped>
-.page-wrapper {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
-    max-width: 1400px;
-    margin: 0 auto;
-    margin-top: 250px;
+.home{
+  width: 65%;
+  margin: 68px auto 0;
 }
-.main-content {
-    flex: 1;
-    min-width: 0;
+.page-wrapper {
+    padding: 0 20px;
+    margin: 100px auto 0;
+    width: 100%;
+}
+.content-header {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
 }
 .card {
     width: 100%;
     height: 200px;
+    min-height: 200px;
+    min-width: 200px;
     border-radius: 10px;
     padding: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
