@@ -1,0 +1,171 @@
+:root {
+  --bg-page: #f5f5f5;
+  --bg-header: rgba(255, 255, 255, 0.75);
+  --bg-card: #ffffff;
+  --bg-card-hover: #fafafa;
+  --bg-input: #ffffff;
+  --bg-component: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-spotlight: #364d79;
+  --text-primary: rgba(0, 0, 0, 0.88);
+  --text-secondary: rgba(0, 0, 0, 0.65);
+  --text-tertiary: rgba(0, 0, 0, 0.45);
+  --text-inverse: #fff;
+  --border-color: rgba(0, 0, 0, 0.06);
+  --border-secondary: #f0f0f0;
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --color-badge: #1890ff;
+}
+
+html.dark {
+  --bg-page: #141414;
+  --bg-header: rgba(30, 30, 30, 0.75);
+  --bg-card: #1f1f1f;
+  --bg-card-hover: #262626;
+  --bg-input: #1f1f1f;
+  --bg-component: #1f1f1f;
+  --bg-elevated: #262626;
+  --bg-spotlight: #1a2740;
+  --text-primary: rgba(255, 255, 255, 0.88);
+  --text-secondary: rgba(255, 255, 255, 0.65);
+  --text-tertiary: rgba(255, 255, 255, 0.45);
+  --text-inverse: rgba(0, 0, 0, 0.88);
+  --border-color: rgba(255, 255, 255, 0.12);
+  --border-secondary: #303030;
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --color-badge: #177ddc;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+html.dark .ant-card,
+html.dark .ant-list,
+html.dark .ant-timeline,
+html.dark .ant-tabs,
+html.dark .ant-input,
+html.dark .ant-input-affix-wrapper,
+html.dark .ant-input-group-addon,
+html.dark .ant-empty {
+  background-color: var(--bg-component);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+html.dark .ant-card {
+  background-color: var(--bg-card);
+}
+
+html.dark .ant-card-hoverable:hover {
+  background-color: var(--bg-card-hover);
+}
+
+html.dark .ant-card-head {
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+html.dark .ant-card-actions {
+  background-color: var(--bg-elevated);
+  border-top-color: var(--border-color);
+}
+
+html.dark .ant-card-actions > li {
+  border-inline-end-color: var(--border-color);
+}
+
+html.dark .ant-card-meta-title,
+html.dark .ant-card-meta-description {
+  color: var(--text-primary);
+}
+
+html.dark .ant-list-item {
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+html.dark .ant-list-header {
+  color: var(--text-primary);
+}
+
+html.dark .ant-list-item-meta-title a {
+  color: var(--text-primary);
+}
+
+html.dark .ant-list-item-meta-description {
+  color: var(--text-secondary);
+}
+
+html.dark .ant-timeline-item-content {
+  color: var(--text-primary);
+}
+
+html.dark .ant-timeline-item-tail {
+  border-inline-start-color: var(--border-secondary);
+}
+
+html.dark .ant-timeline-item-head {
+  background-color: var(--bg-component);
+  border-color: var(--border-secondary);
+}
+
+html.dark .ant-input,
+html.dark .ant-input-affix-wrapper {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+}
+
+html.dark .ant-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+html.dark .ant-input-group-addon {
+  background-color: var(--bg-elevated);
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+}
+
+html.dark .ant-tabs-tab {
+  color: var(--text-secondary);
+}
+
+html.dark .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--color-badge);
+}
+
+html.dark .ant-tabs-ink-bar {
+  background: var(--color-badge);
+}
+
+html.dark .ant-empty-description {
+  color: var(--text-secondary);
+}
+
+html.dark .ant-divider {
+  border-color: var(--border-color);
+}
+
+html.dark .ant-tag {
+  border-color: var(--border-color);
+}
+
+html.dark .ant-image {
+  background-color: var(--bg-elevated);
+}
+
+html.dark .ant-avatar {
+  background-color: var(--bg-elevated);
+}
+
+html.dark .ant-menu {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+html.dark .ant-menu-item a,
+html.dark .ant-menu-item span {
+  color: var(--text-primary);
+}

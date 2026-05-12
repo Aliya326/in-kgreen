@@ -1,23 +1,15 @@
 <template>
-    <a-card class="category" title="分类">
-        <div class="category-header">
-            <p>分类1:</p>
-            <a-select v-model:value="category" style="width: 120px; margin-left: 10px">
-                <a-select-option value="all">全部</a-select-option>
-                <a-select-option value="分类1">分类1</a-select-option>
-                <a-select-option value="分类2">分类2</a-select-option>
-                <a-select-option value="分类3">分类3</a-select-option>
-            </a-select>
-            <p>分类2:</p>
-            <a-select style="width: 120px; margin-left: 10px">
-                <a-select-option value="all">全部</a-select-option>
-                <a-select-option value="分类1">分类1</a-select-option>
-                <a-select-option value="分类2">分类2</a-select-option>
-                <a-select-option value="分类3">分类3</a-select-option>
-            </a-select>
-        </div>
-    </a-card>
-    <a-row :gutter="[12, 12]">
+    <div class="category">
+      <div class="category-header">
+            <a-tabs v-model:activeKey="category" style="margin-left: 10px">
+                <a-tab-pane 
+                v-for="item in categoryData"
+                :key="item.value"
+                :tab="item.label"
+                />
+            </a-tabs>
+      </div>        
+        <a-row :gutter="[12, 12]">
           <a-col :span="6" v-for="item in categoryList" :key="item.id">
             <a-card class="card" 
             hoverable
@@ -26,49 +18,71 @@
                   <a-image :src="item.cover_image" :preview="false"/>
               </template>
               <p>{{ item.title }}</p>
-              <template #actions>
-                  <a-tag color="processing">{{ item.category }}</a-tag>
-              </template>
+              <a-divider/>
+              <a-tag color="processing">{{ item.category }}</a-tag>
             </a-card>
           </a-col>
         </a-row>
+     </div>
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue';
-import request from '@/utils/request'
+import { computed, ref } from 'vue'
+import { useArticleStore } from '@/stores/counter'
+import { storeToRefs } from 'pinia'
 
-const category = ref("all");
-const area1 = ref([]);
-const fetchData = async () => {
-    try {
-        const res = await request.get('/mock/area1.json')
-        area1.value = res
-    } catch (error) {
-        console.error('获取数据失败：', error)
-    }
-}
+const articleStore = useArticleStore()
+const { articleList } = storeToRefs(articleStore)
+
+const category = ref("all")
+const categoryData = ref([
+    { label: "全部", value: "all" },
+    { label: "分类1", value: "分类1" },
+    { label: "分类2", value: "分类2" },
+    { label: "分类3", value: "分类3" }
+])
+
 const categoryList = computed(() => {
-    if(category.value === "all") return area1.value;
-    return area1.value.filter(item=>
-    item.category===category.value 
-    )
-})
-
-onMounted(() => {
-    fetchData()
+    if (category.value === "all") return articleList.value
+    return articleList.value.filter(item => item.category === category.value)
 })
 
 </script>
-<style>
-.category{
-    margin-top:68px;
-    width: 100%;
-    height: 100%;
-    margin: 10px;
+<style scoped>
+.category {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: 0 auto;
 }
 .category-header {
     display: flex;
     align-items: center;
+    margin-top: 68px;
+}
+.card {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    min-width: 200px;
+    border-radius: 10px;
+    padding: 10px;
+}
+.card :deep(.ant-card-body) {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+}
+.card :deep(.ant-card-body) > p {
+    flex: 1;
+    margin-bottom: 0;
+}
+.card :deep(.ant-card-body) > .ant-divider {
+    margin: 8px 0;
+}
+.card :deep(.ant-card-body) > .ant-tag {
+    align-self: flex-start;
 }
 </style>

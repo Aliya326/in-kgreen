@@ -20,11 +20,11 @@
   text-align: center;
   height: 160px;
   line-height: 160px;
-  background: #364d79;
+  background: var(--bg-spotlight);
   overflow: hidden;
 }
 
 :deep(.slick-slide h3) {
-  color: #fff;
+  color: var(--text-inverse);
 }
 </style>

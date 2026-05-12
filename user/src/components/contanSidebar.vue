@@ -1,6 +1,6 @@
 <template>
   <div class="a-card">
-    <a-card style="box-shadow: 0 2px 8px rgba(0,0,0,0.15); margin: 0 20px 20px 20px; width: 300px;">
+    <a-card style="box-shadow: var(--shadow-card); margin: 0 20px 20px 20px; width: 300px;">
       <template #actions>
         <GithubOutlined @click="handleClick" />
       </template>
@@ -10,7 +10,7 @@
         </template>
       </a-card-meta>
     </a-card>
-    <a-card title="#标签" style="box-shadow: 0 2px 8px rgba(0,0,0,0.15); margin: 20px; width: 300px;">
+    <a-card title="#标签" style="box-shadow: var(--shadow-card); margin: 20px; width: 300px;">
         <a-space :size="[0, 'small']" wrap style="flex-wrap: wrap;">
             <a-tag :bordered="false" color="processing"
             v-for="item in tagsData"

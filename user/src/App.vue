@@ -1,10 +1,12 @@
-<template scoped>
+<template>
   <router-view/>
 </template>
 
-<script>
+<script setup>
+import { useThemeStore } from '@/stores/theme'
 
+useThemeStore()
 </script>
 
-<style scoped>
-</style>  
+<style>
+</style>

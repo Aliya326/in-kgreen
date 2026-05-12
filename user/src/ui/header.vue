@@ -1,14 +1,19 @@
 <template>
-  <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" class="header-menu" 
+  <a-menu :selectedKeys="current" mode="horizontal" :items="items" class="header-menu" 
   @click="handleClick"/>
 </template>
 <script setup>
 import { h, ref, computed, nextTick } from 'vue';
-import { HomeOutlined, FolderOutlined, InboxOutlined, SearchOutlined } from '@ant-design/icons-vue';
+import { HomeOutlined, FolderOutlined, InboxOutlined, SearchOutlined, BulbOutlined, BulbFilled } from '@ant-design/icons-vue';
 import { Input } from 'ant-design-vue';
 import router from '@/router'
+import { useThemeStore } from '@/stores/theme'
 
-const current = ref(['home']);
+const themeStore = useThemeStore()
+
+const current = computed(() => 
+  [router.currentRoute.value.name || 'home']
+)
 const isSearching = ref(false);
 const keyword = ref('');
 //需要访问的是一个对象，需要通过 e.key 获取点击的菜单 key，而不是直接访问 item.path
@@ -20,7 +25,8 @@ const handleClick = (e) => {
       inputEl?.focus();
     });
       return;
-    } 
+    }
+    if (e.key === 'theme') return;
       router.push({ name: e.key })
 }
 const items = computed(() => [
@@ -74,12 +80,21 @@ const items = computed(() => [
         })
       : '搜索',
     title: '搜索',
-  }
+  },
+  {
+    key: 'theme',
+    label: h('span', {
+      style: { cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' },
+      onClick: () => themeStore.toggleTheme(),
+    }, [
+      h(themeStore.isDark ? BulbFilled : BulbOutlined),
+      themeStore.isDark ? '浅色' : '深色',
+    ]),
+  },
 ]);
 </script>
 <style scoped>
 .header-menu {
-    background-color: #f5f5f5;
     position: fixed;
     top: 0;
     left: 0;
@@ -88,7 +103,7 @@ const items = computed(() => [
     display: flex;
     justify-content: center;
     backdrop-filter: blur(12px);
-    background: rgba(255,255,255,0.75);
-    box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    background: var(--bg-header);
+    box-shadow: 0 1px 0 var(--border-color);
 }
 </style>  
