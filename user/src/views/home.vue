@@ -1,10 +1,10 @@
 <template>
   <div class="home-wrapper">
-    <div class="home">
-      <div class="page-wrapper">
-        <div class="content-header">
-          <content-header/>
-        </div>
+    <div class="page-wrapper">
+      <div class="content-header">
+        <content-header/>
+      </div>
+      <div class="content-body">
         <div class="main-content" v-lazy>
           <a-row :gutter="[12, 12]">
             <a-col :span="8" v-for="item in articleList" :key="item.id">
@@ -23,10 +23,10 @@
             </a-col>
           </a-row>
         </div>
+        <div class="sidebar">
+          <Sidercard/>
+        </div>
       </div>
-    </div>
-    <div class="sidebar">
-      <Sidercard/>
     </div>
   </div>
 </template>
@@ -34,10 +34,9 @@
 <script setup>
 import contentHeader from '@/components/contentHeader.vue'
 import Sidercard from '@/components/contanSidebar.vue'
-import { useArticleStore } from '@/stores/counter'
+import { useArticleStore } from '@/stores/ArticleList'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-
 
 const router = useRouter()
 const articleStore = useArticleStore()
@@ -52,20 +51,23 @@ const handlePage = (item) => {
 .home-wrapper {
   display: flex;
   justify-content: center;
-  margin-top: 68px;
-}
-.home{
-  width: 65%;
 }
 .page-wrapper {
     padding: 0 20px;
     margin: 100px auto 0;
-    width: 100%;
+    width: 80%;
+    max-width: 1200px;
 }
 .content-header {
     width: 100%;
     border-radius: 10px;
     margin-bottom: 20px;
+}
+.content-body {
+    display: flex;
+}
+.main-content {
+    flex: 1;
 }
 .card {
     width: 100%;
@@ -93,9 +95,8 @@ const handlePage = (item) => {
 }
 .sidebar {
     display: flex;
-    width: 30%;
-    height: 100%;
+    width: 300px;
+    flex-shrink: 0;
     margin-left: 20px;
-    margin-top: 100px;
 }
 </style>

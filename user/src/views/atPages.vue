@@ -17,7 +17,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { marked } from 'marked'
-import { useArticleStore } from '@/stores/counter'
+import { useArticleStore } from '@/stores/ArticleList'
 import { storeToRefs } from 'pinia'
 
 const articleStore = useArticleStore()
@@ -31,7 +31,7 @@ const introHtml = computed(() => {
 
 // ||{}防御性编程，防止空指针异常
 const data = computed(() => {
-    return articleList.value.find(item => item.id === route.params.id) || {}
+    return articleList.value.find(item => item.id === Number(route.params.id)) || {}
 })
 
 </script>

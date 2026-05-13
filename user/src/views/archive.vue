@@ -22,7 +22,7 @@
             :datetime="item.time">
                 <div class="timeline-title">{{ item.time }} <span class="count-badge">{{ item.count }}</span></div>
                 <div v-for="file in filteredArchiveFile" :key="file.id">
-                    <p v-if="file.time === item.time">{{ file.title }}</p>
+                    <p v-if="file.publishDate === item.time">{{ file.title }}</p>
                 </div>
             </a-timeline-item>
         </a-timeline>
@@ -33,48 +33,29 @@
 <script setup>
 import { ref,computed } from 'vue'
 import { SearchOutlined } from '@ant-design/icons-vue'
+import { useArticleStore } from '@/stores/ArticleList'
+import { storeToRefs } from 'pinia'
 
 const value = ref('')
-const archiveFile = ref([
-    {
-        id: 1,
-        time: '2026-1-10',
-        title:"第一个"
-    },
-    {
-        id:4,
-        time: '2026-1-10',
-        title:"第四个"
-
-    },
-    {
-        id: 2,
-        time: '2026-2-18',
-        title:"第二个"
-    },
-    {
-        id: 3,
-        time: '2026-3-25',
-        title:"第三个"
-    },
-])
+const articleStore = useArticleStore()
+const { articleList } = storeToRefs(articleStore)
 
 const filteredArchiveFile = computed(() => {
-  if(!value.value || value.value === '') return archiveFile.value;
-  return archiveFile.value.filter(item => 
-    item.time.includes(value.value) || 
+  if(!value.value || value.value === '') return articleList.value;
+  return articleList.value.filter(item => 
+    item.publishDate.includes(value.value) || 
     item.title.includes(value.value)
   );
 })
 
 const filteredAchiveTime = computed (() =>{
-  const source = value.value ? filteredArchiveFile.value : archiveFile.value;
+  const source = value.value ? filteredArchiveFile.value : articleList.value;
   const map = new Map();
   source.forEach(item => {
-    if (map.has(item.time)) {
-      map.get(item.time).count++;
+    if (map.has(item.publishDate)) {
+      map.get(item.publishDate).count++;
     } else {
-      map.set(item.time, { time: item.time, count: 1 });
+      map.set(item.publishDate, { time: item.publishDate, count: 1 });
     }
   });
   return [...map.values()];

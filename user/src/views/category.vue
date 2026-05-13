@@ -24,13 +24,15 @@
             </a-card>
           </a-col>
         </a-row>
+        <FourZeroFour v-if="categoryList.length === 0" />
      </div>
 </template>
 
 <script setup>
 import { computed, ref } from 'vue'
-import { useArticleStore } from '@/stores/counter'
+import { useArticleStore } from '@/stores/ArticleList'
 import { storeToRefs } from 'pinia'
+import FourZeroFour from '@/404.vue'
 import { useCategoryStore } from '@/stores/category'
 import { useRouter } from 'vue-router'
 

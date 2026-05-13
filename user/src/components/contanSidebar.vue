@@ -1,6 +1,6 @@
 <template>
   <div class="a-card">
-    <a-card style="box-shadow: var(--shadow-card); margin: 0 20px 20px 20px; width: 300px;">
+    <a-card>
       <template #actions>
         <GithubOutlined @click="handleClick" />
       </template>
@@ -10,55 +10,34 @@
         </template>
       </a-card-meta>
     </a-card>
-    <a-card title="#标签" style="box-shadow: var(--shadow-card); margin: 20px; width: 300px;">
+    <a-card title="#标签" style="margin-top: 20px;">
         <a-space :size="[0, 'small']" wrap style="flex-wrap: wrap;">
             <a-tag :bordered="false" color="processing"
-            v-for="item in tagsData"
-            :key="item.name"
-        >{{item.name}}</a-tag>
+            v-for="item in categoryList"
+            :key="item.label"
+            >{{item.label}}</a-tag>
         </a-space>
     </a-card>
   </div>
 </template>
-<script >
-import { ref } from 'vue';
+<script setup>
+import { computed } from 'vue'
 import { GithubOutlined } from '@ant-design/icons-vue';
+import { useCategoryStore } from '@/stores/category.js'
 
-export default {
-  components: {
-    GithubOutlined
-  },
-  setup() {
-    const tagsData = ref([
-    {
-        name: '标签1',
-        count: 100,
-    },
-    {
-        name: '标签2',
-        count: 2000,
-    },
-]);
-    return {
-        tagsData,
-    }
-  },
-  methods: {
-    setting() {
-        console.log('setting');
-    },
-    handleClick() {
-        window.open('https://github.com/', '_blank');
-    },
-  }
-}
+const categoryStore = useCategoryStore()
+const categoryList = computed(() => 
+  categoryStore.categoryListData &&
+  categoryStore.categoryListData.filter(item => item.label !== '全部')
+  )
 </script>
 
-<style>
+<style scoped>
 .a-card {
+   width: 300px;
     height: 200px;
-    /*粘性定位，固定在顶部，不随内容滚动 */
-    position: sticky;
+    /*随内容滚动 */
+    position: relative;
     /*flex-shrink: 0;使卡片不缩放，保持固定高度*/
     flex-shrink: 0;
 }

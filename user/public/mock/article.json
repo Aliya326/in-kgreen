@@ -1,6 +1,6 @@
 [
     {
-        "id":"1",
+        "id":1,
         "content":"这是第一个的简介",
         "title": "第一个",
         "publishDate":"2024-06-01",
@@ -9,7 +9,7 @@
         "intro_md":"# 标题\n\n这是简介的 **Markdown** 内容\n\n- 要点1\n- 要点2"
         },
     {
-        "id":"2",
+        "id":2,
         "content":"这是第二个的简介",
         "title": "第二个",
         "publishDate":"2024-06-02",
@@ -18,7 +18,7 @@
         "intro_md":"# 标题\n\n这是简介的 **Markdown** 内容\n\n- 要点1\n- 要点2"
     },
     {
-        "id":"3",
+        "id":3,
         "content":"这是第三个的简介",
         "title": "第三个",
         "publishDate":"2024-06-03",
@@ -27,7 +27,7 @@
         "intro_md":"# 标题\n\n这是简介的 **Markdown** 内容\n\n- 要点1\n- 要点2"
     },
     {
-        "id":"4",
+        "id":4,
         "content":"这是第四个的简介",
         "title": "第四个",
         "publishDate":"2024-06-04",
@@ -36,7 +36,7 @@
         "intro_md":"# 标题\n\n这是简介的 **Markdown** 内容\n\n- 要点1\n- 要点2"
     },
     {
-        "id":"5",
+        "id":5,
         "content":"这是第五个的简介",
         "title": "第五个",
         "publishDate":"2024-06-05",
