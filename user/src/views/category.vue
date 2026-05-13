@@ -9,13 +9,14 @@
                 />
             </a-tabs>
       </div>        
-        <a-row :gutter="[12, 12]" v-lazy>
+        <a-row :gutter="[12, 12]" >
           <a-col :span="6" v-for="item in categoryList" :key="item.id">
             <a-card class="card" 
             hoverable
+            @click="handlePage(item)"
             >
               <template #cover>
-                  <a-image :src="item.cover_image" :preview="false"/>
+                  <a-image :v-lazy="item.cover_image" :preview="false"/>
               </template>
               <p>{{ item.title }}</p>
               <a-divider/>
@@ -31,7 +32,9 @@ import { computed, ref } from 'vue'
 import { useArticleStore } from '@/stores/counter'
 import { storeToRefs } from 'pinia'
 import { useCategoryStore } from '@/stores/category'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const articleStore = useArticleStore()
 const categoryStore = useCategoryStore()
 const category = ref("all")
@@ -43,6 +46,10 @@ const categoryList = computed(() => {
     if (category.value === "all") return articleList.value
     return articleList.value.filter(item => item.category === category.value)
 })
+
+const handlePage = (item) => {
+  router.push(`/atPages/${item.id}`)
+}
 
 </script>
 <style scoped>

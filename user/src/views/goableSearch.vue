@@ -10,7 +10,7 @@
           :description="item.content"
         >
           <template #title>
-            <a :href="`/atPages/${item.id}`" target="_blank">{{ item.title }}</a>
+            <a @click="handlePage(item)" target="_blank">{{ item.title }}</a>
           </template>
           <template #extra>
             <img
@@ -29,8 +29,9 @@ import { ref, computed} from 'vue'
 import { useRoute } from 'vue-router'
 import { useArticleStore } from '@/stores/counter'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 
-
+const router = useRouter()
 const articleStore = useArticleStore()
 const { articleList} = storeToRefs(articleStore)
 
@@ -42,6 +43,10 @@ const dataSource = computed(() => {
     item.content.includes(keyword.value)
 )
 })
+
+const handlePage = (item) => {
+  router.push(`/atPages/${item.id}`)
+}
 </script>
 
 <style scoped>

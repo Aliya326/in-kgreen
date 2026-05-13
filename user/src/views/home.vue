@@ -1,31 +1,33 @@
 <template>
-  <div class="home">
-    <div class="page-wrapper">
-      <div class="content-header">
-        <content-header/>
-      </div>
-      <div class="main-content" v-lazy>
-        <a-row :gutter="[12, 12]">
-          <a-col :span="8" v-for="item in articleList" :key="item.id">
-            <a-card class="card" 
-            hoverable
-            :loading="loading"
-            @click="handlePage(item)"
-            >
-              <template #cover>
-                  <a-image :src="item.cover_image" :preview="false"/>
-              </template>
-              <p>{{ item.title }}</p>
-              <a-divider/>
-              <a-tag color="processing">{{ item.category }}</a-tag>
-            </a-card>
-          </a-col>
-        </a-row>
+  <div class="home-wrapper">
+    <div class="home">
+      <div class="page-wrapper">
+        <div class="content-header">
+          <content-header/>
+        </div>
+        <div class="main-content" v-lazy>
+          <a-row :gutter="[12, 12]">
+            <a-col :span="8" v-for="item in articleList" :key="item.id">
+              <a-card class="card" 
+              hoverable
+              :loading="loading"
+              @click="handlePage(item)"
+              >
+                <template #cover>
+                    <a-image :v-lazy="item.cover_image" :preview="false"/>
+                </template>
+                <p>{{ item.title }}</p>
+                <a-divider/>
+                <a-tag color="processing">{{ item.category }}</a-tag>
+              </a-card>
+            </a-col>
+          </a-row>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="sidebar">
-    <Sidercard/>
+    <div class="sidebar">
+      <Sidercard/>
+    </div>
   </div>
 </template>
 
@@ -47,9 +49,13 @@ const handlePage = (item) => {
 
 </script>
 <style scoped>
+.home-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 68px;
+}
 .home{
   width: 65%;
-  margin: 68px auto 0;
 }
 .page-wrapper {
     padding: 0 20px;
@@ -90,5 +96,6 @@ const handlePage = (item) => {
     width: 30%;
     height: 100%;
     margin-left: 20px;
+    margin-top: 100px;
 }
 </style>

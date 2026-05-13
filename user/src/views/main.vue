@@ -1,8 +1,8 @@
 <template>
     <appHeader/>
     <router-view v-slot="{ Component }">
-        <Transition name="fade-slide">
-            <component :is="Component" />
+        <Transition name="fade-slide" mode="out-in">
+            <component :is="Component" :key="Component.name"  />
         </Transition>
     </router-view>
 </template>
@@ -16,7 +16,8 @@ import appHeader from '@/ui/header.vue'
     padding-top: 66px;
 }
 .fade-slide-enter-active, .fade-slide-leave-active {
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  will-change: opacity, transform;
 }
 .fade-slide-enter-from { opacity: 0; transform: translateY(10px); }
 .fade-slide-leave-to { opacity: 0; transform: translateY(-10px); }

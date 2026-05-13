@@ -1,7 +1,8 @@
 <template>
+    <div class="at-pages">
       <a-card class="header" :title="data.title">
         <div class="header-content">
-            <img :src="data.cover_image"/>
+            <img :v-lazy="data.cover_image"/>
             <span>{{ data.content }}</span>
         </div>
       </a-card>
@@ -10,6 +11,7 @@
       </a-card>
       <a-card class="download" title="下载">
       </a-card>
+    </div>
 </template>
 <script  setup>
 import { computed } from 'vue'
@@ -34,11 +36,13 @@ const data = computed(() => {
 
 </script>
 <style scoped>
+.at-pages {
+    padding-top: 68px;
+}
 .header{
     margin:0 auto;
     width: 80%;
     justify-content: center;
-    margin-top: 68px;
 }
 .header-content {
     display: flex;
