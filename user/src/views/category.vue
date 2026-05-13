@@ -3,13 +3,13 @@
       <div class="category-header">
             <a-tabs v-model:activeKey="category" style="margin-left: 10px">
                 <a-tab-pane 
-                v-for="item in categoryData"
+                v-for="item in categoryListData"
                 :key="item.value"
                 :tab="item.label"
                 />
             </a-tabs>
       </div>        
-        <a-row :gutter="[12, 12]">
+        <a-row :gutter="[12, 12]" v-lazy>
           <a-col :span="6" v-for="item in categoryList" :key="item.id">
             <a-card class="card" 
             hoverable
@@ -30,17 +30,14 @@
 import { computed, ref } from 'vue'
 import { useArticleStore } from '@/stores/counter'
 import { storeToRefs } from 'pinia'
+import { useCategoryStore } from '@/stores/category'
 
 const articleStore = useArticleStore()
-const { articleList } = storeToRefs(articleStore)
-
+const categoryStore = useCategoryStore()
 const category = ref("all")
-const categoryData = ref([
-    { label: "全部", value: "all" },
-    { label: "分类1", value: "分类1" },
-    { label: "分类2", value: "分类2" },
-    { label: "分类3", value: "分类3" }
-])
+
+const { articleList } = storeToRefs(articleStore)
+const { categoryListData } = storeToRefs(categoryStore)
 
 const categoryList = computed(() => {
     if (category.value === "all") return articleList.value

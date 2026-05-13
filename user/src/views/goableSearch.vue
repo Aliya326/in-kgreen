@@ -10,7 +10,7 @@
           :description="item.content"
         >
           <template #title>
-            <a :href="`/pages/${item.id}`" target="_blank">{{ item.title }}</a>
+            <a :href="`/atPages/${item.id}`" target="_blank">{{ item.title }}</a>
           </template>
           <template #extra>
             <img
@@ -25,32 +25,22 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed} from 'vue'
 import { useRoute } from 'vue-router'
-import request from '@/utils/request'
+import { useArticleStore } from '@/stores/counter'
+import { storeToRefs } from 'pinia'
 
-const area1 = ref([])
-const fetchData = async () => {
-    try {
-        const res = await request.get('/mock/area1.json')
-        area1.value = res
-    } catch (error) {
-        console.error('获取数据失败：', error)
-    }
-}
+
+const articleStore = useArticleStore()
+const { articleList} = storeToRefs(articleStore)
 
 const route = useRoute()
 const keyword = ref(route.query.keyword)
 const dataSource = computed(() => {
-    return area1.value.filter(item => 
+    return articleList.value.filter(item => 
     item.title.includes(keyword.value) ||
     item.content.includes(keyword.value)
 )
-})
-
-//在组件挂载完成后获取数据
-onMounted(() => {
-    fetchData()
 })
 </script>
 

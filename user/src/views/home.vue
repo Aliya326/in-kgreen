@@ -4,9 +4,9 @@
       <div class="content-header">
         <content-header/>
       </div>
-      <div class="main-content">
+      <div class="main-content" v-lazy>
         <a-row :gutter="[12, 12]">
-          <a-col :span="6" v-for="item in articleList" :key="item.id">
+          <a-col :span="8" v-for="item in articleList" :key="item.id">
             <a-card class="card" 
             hoverable
             :loading="loading"
@@ -24,13 +24,18 @@
       </div>
     </div>
   </div>
+  <div class="sidebar">
+    <Sidercard/>
+  </div>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
-import { useArticleStore } from '@/stores/counter'
-import { storeToRefs } from 'pinia'
 import contentHeader from '@/components/contentHeader.vue'
+import Sidercard from '@/components/contanSidebar.vue'
+import { useArticleStore } from '@/stores/counter'
+import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
+
 
 const router = useRouter()
 const articleStore = useArticleStore()
@@ -79,5 +84,11 @@ const handlePage = (item) => {
 }
 .card :deep(.ant-card-body) > .ant-tag {
     align-self: flex-start;
+}
+.sidebar {
+    display: flex;
+    width: 30%;
+    height: 100%;
+    margin-left: 20px;
 }
 </style>

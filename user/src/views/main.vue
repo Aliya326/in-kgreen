@@ -1,8 +1,10 @@
 <template>
     <appHeader/>
-    <Transition name="fade-slide">
-        <router-view></router-view>
-    </Transition>
+    <router-view v-slot="{ Component }">
+        <Transition name="fade-slide">
+            <component :is="Component" />
+        </Transition>
+    </router-view>
 </template>
 <script setup>
 import appHeader from '@/ui/header.vue'
