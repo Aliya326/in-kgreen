@@ -5,16 +5,18 @@
         <content-header/>
       </div>
       <div class="content-body">
-        <div class="main-content" v-lazy>
+        <div class="main-content">
           <a-row :gutter="[12, 12]">
-            <a-col :span="8" v-for="item in articleList" :key="item.id">
+            <a-col :xs="24" :sm="12" :md="8" :lg="8" 
+            v-for="item in articleList" 
+            :key="item.id"
+            :loading="loading">
               <a-card class="card" 
               hoverable
-              :loading="loading"
               @click="handlePage(item)"
               >
                 <template #cover>
-                    <a-image :v-lazy="item.cover_image" :preview="false"/>
+                    <a-image :src="item.cover_image" :preview="false"/>
                 </template>
                 <p>{{ item.title }}</p>
                 <a-divider/>

@@ -9,14 +9,14 @@
                 />
             </a-tabs>
       </div>        
-        <a-row :gutter="[12, 12]" >
-          <a-col :span="6" v-for="item in categoryList" :key="item.id">
+        <a-row :gutter="[12, 12]" v-if="categoryList.length > 0">
+          <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in categoryList" :key="item.id">
             <a-card class="card" 
             hoverable
             @click="handlePage(item)"
             >
               <template #cover>
-                  <a-image :v-lazy="item.cover_image" :preview="false"/>
+                  <a-image :src="item.cover_image" :preview="false"/>
               </template>
               <p>{{ item.title }}</p>
               <a-divider/>
@@ -24,7 +24,7 @@
             </a-card>
           </a-col>
         </a-row>
-        <FourZeroFour v-if="categoryList.length === 0" />
+        <a-empty v-else description="该分类下暂无内容" style="margin-top: 60px" />
      </div>
 </template>
 
@@ -32,7 +32,6 @@
 import { computed, ref } from 'vue'
 import { useArticleStore } from '@/stores/ArticleList'
 import { storeToRefs } from 'pinia'
-import FourZeroFour from '@/404.vue'
 import { useCategoryStore } from '@/stores/category'
 import { useRouter } from 'vue-router'
 
