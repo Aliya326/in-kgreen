@@ -38,13 +38,13 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const articleStore = useArticleStore()
 const categoryStore = useCategoryStore()
-const category = ref("all")
+const category = ref("全部")
 
 const { articleList } = storeToRefs(articleStore)
 const { categoryListData } = storeToRefs(categoryStore)
 
 const categoryList = computed(() => {
-    if (category.value === "all") return articleList.value
+    if (category.value === "全部") return articleList.value
     return articleList.value.filter(item => item.category === category.value)
 })
 

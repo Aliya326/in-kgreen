@@ -46,7 +46,6 @@ const dataSource = computed(() => {
     return (
       (item.title || '').includes(kw) ||
       (item.content || '').includes(kw) ||
-      (item.intro_md || '').includes(kw) ||
       (item.category || '').includes(kw)
     )
   })

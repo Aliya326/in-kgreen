@@ -12,7 +12,7 @@ export const useArticleStore = defineStore('article', () => {
     if (loaded.value && !force) return
     try {
       loading.value = true
-      const res = await request.get('/mock/article.json')
+      const res = await request.get('http://localhost:8080/articles/list')
       articleList.value = res
       loaded.value = true
     } catch (error) {

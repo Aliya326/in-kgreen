@@ -11,7 +11,7 @@ export const useCategoryStore = defineStore('category', () => {
     if (loaded.value && !force) return
     try {
       loading.value = true
-      const res = await request.get('/mock/category.json')
+      const res = await request.get('http://localhost:8080/categories/list')
       categoryListData.value = res
       loaded.value = true
     } catch (error) {
