@@ -1,9 +1,15 @@
-<script>
-export default {
-  name: 'App'
-}
+<script setup>
+import { onMounted } from 'vue'
+import { useArticleListStore } from '@/stores/articleList'
+import { useCategoryStore } from '@/stores/category'
 
+const articleListStore = useArticleListStore()
+const categoryStore = useCategoryStore()
 
+onMounted(() => {
+    articleListStore.getArticleList()
+    categoryStore.getCategoryList()
+})
 </script>
 
 <template>
@@ -11,6 +17,3 @@ export default {
     <router-view />
   </div>
 </template>
-
-<style scoped>
-</style>

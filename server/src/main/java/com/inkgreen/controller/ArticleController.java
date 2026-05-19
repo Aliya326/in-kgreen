@@ -25,4 +25,9 @@ public class ArticleController {
     public Article detail(@PathVariable Integer id) {
         return articleService.findById(id);
     }
+
+    @PostMapping("/add")
+    public void add(@RequestBody Article article) {
+        articleService.addArticle(article);
+    }
 }

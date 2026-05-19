@@ -18,4 +18,15 @@ public class CategoryService {
     public List<Category> findAll() {
         return categoryMapper.findAll();
     }
+
+    public void deleteById(Integer id) {
+        categoryMapper.deleteById(id);
+    }
+
+    public void addCategory(Category category) {
+        if(category.getValue() == null || category.getValue().isEmpty()){
+            category.setValue(category.getLabel());
+        }
+        categoryMapper.insert(category);
+    }
 }

@@ -1,7 +1,8 @@
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 
 const service = axios.create({
-    baseURL: '',  // 后续替换为你的后端 API 地址
+    baseURL: 'http://localhost:8080',  // 后续替换为你的后端 API 地址
     timeout: 10000
 })
 
@@ -12,7 +13,10 @@ service.interceptors.request.use(
         return config
     },
     error => {
-        console.error('请求错误：', error)
+        ElMessage({
+            message: '请求失败',
+            type: 'error'
+        })
         return Promise.reject(error)
     }
 )
@@ -24,7 +28,11 @@ service.interceptors.response.use(
         return response.data
     },
     error => {
-        console.error('响应错误：', error)
+        /*错误弹出提示*/ 
+        ElMessage({
+            message: '请求失败',
+            type: 'error'
+        })
         return Promise.reject(error)
     }
 )

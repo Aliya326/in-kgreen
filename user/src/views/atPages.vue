@@ -28,19 +28,14 @@ import { useRoute } from 'vue-router'
 import { marked } from 'marked'
 import { storeToRefs } from 'pinia'
 import { useArticleStore } from '@/stores/ArticleList'
+import DOMPurify from 'dompurify';
 
 const articleStore = useArticleStore()
 const route = useRoute()
 const { articleList, loading } = storeToRefs(articleStore)
 
-// 简易 XSS 过滤：移除 script、on* 事件、javascript: 协议
-const sanitize = (html) => {
-  return String(html)
-    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
-    .replace(/<iframe[\s\S]*?>[\s\S]*?<\/iframe>/gi, '')
-    .replace(/\son\w+="[^"]*"/gi, '')
-    .replace(/\son\w+='[^']*'/gi, '')
-    .replace(/javascript:/gi, '')
+function sanitize(html) {
+  return DOMPurify.sanitize(html)
 }
 
 marked.setOptions({ mangle: false, headerIds: false, breaks: true })

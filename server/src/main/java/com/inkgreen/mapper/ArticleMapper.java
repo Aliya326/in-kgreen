@@ -23,4 +23,7 @@ public interface ArticleMapper {
             @Result(column = "intro_md", property = "introMd")
     })
     Article findById(Integer id);
+
+    @Insert("INSERT INTO articles (title, content, publish_time, category, cover_image, intro_md) VALUES (#{title}, #{content}, #{publishTime}, #{category}, #{coverImage}, #{introMd})")
+    void insert(Article article);
 }

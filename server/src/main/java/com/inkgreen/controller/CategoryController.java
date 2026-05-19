@@ -20,4 +20,14 @@ public class CategoryController {
     public List<Category> list() {
         return categoryService.findAll();
     }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Integer id) {
+        categoryService.deleteById(id);
+    }
+
+    @PostMapping("/add")
+    public void add(@RequestBody Category category) {
+        categoryService.addCategory(category);
+    }
 }

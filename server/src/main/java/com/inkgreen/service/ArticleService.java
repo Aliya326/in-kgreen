@@ -1,5 +1,6 @@
 package com.inkgreen.service;
 
+import java.time.LocalDate;
 import com.inkgreen.entity.Article;
 import com.inkgreen.mapper.ArticleMapper;
 import org.springframework.stereotype.Service;
@@ -21,5 +22,10 @@ public class ArticleService {
 
     public Article findById(Integer id) {
         return articleMapper.findById(id);
+    }
+
+    public void addArticle(Article article) {
+        article.setPublishTime(LocalDate.now());
+        articleMapper.insert(article);
     }
 }

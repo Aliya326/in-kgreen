@@ -3,7 +3,7 @@
         <div class="page-header">
             <div class="header-left">
                 <h1 class="page-title">分类管理</h1>
-                <p class="page-desc">管理文章分类与内容组织结构</p>
+                <p class="page-desc">管理分类</p>
             </div>
         </div>
 
@@ -11,13 +11,9 @@
             <template #header>
                 <div class="card-header">
                     <div class="header-actions">
-                        <el-button type="primary" class="add-btn">
+                        <el-button type="primary" class="add-btn" @click="openAddDialog">
                             <el-icon><Plus /></el-icon>
                             添加分类
-                        </el-button>
-                        <el-button type="danger" plain class="delete-btn">
-                            <el-icon><Delete /></el-icon>
-                            删除分类
                         </el-button>
                     </div>
                     <div class="search-area">
@@ -44,22 +40,12 @@
                         <span class="id-badge">{{ scope.row.id }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="name" label="分类名称" min-width="160">
+                <el-table-column prop="label" label="分类名称" min-width="160">
                     <template #default="scope">
                         <div class="category-name-cell">
                             <div class="category-dot" :style="{ background: scope.row.color }"></div>
-                            <span class="category-name">{{ scope.row.name }}</span>
+                            <span class="category-name">{{ scope.row.label }}</span>
                         </div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="description" label="分类描述" min-width="260">
-                    <template #default="scope">
-                        <span class="category-desc">{{ scope.row.description }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="count" label="文章数" width="100">
-                    <template #default="scope">
-                        <span class="count-badge">{{ scope.row.count }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="160" fixed="right">
@@ -69,50 +55,68 @@
                                 编辑
                             </el-button>
                             <el-divider direction="vertical" />
-                            <el-button type="danger" size="small" link>
+                            <el-button type="danger" size="small" link @click="deleteCategory(scope.row)">
                                 删除
                             </el-button>
                         </div>
                     </template>
                 </el-table-column>
             </el-table>
-
-            <div class="pagination-wrapper">
-                <el-pagination
-                    :current-page="1"
-                    :page-sizes="[10, 20, 50, 100]"
-                    :page-size="10"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="categories.length"
-                    background
-                    small
-                />
-            </div>
         </el-card>
     </div>
-</template>
+
+  <el-dialog v-model="dialogVisible" title="添加分类" width="450px" destroy-on-close>
+    <el-form :model="form">
+        <el-form-item label="分类名称" :label-width="formLabelWidth">
+          <el-input v-model="form.label" autocomplete="off" />
+        </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="dialogVisible = false">取消</el-button>
+      <el-button type="primary" @click="addCategory(form)">
+        确认添加
+      </el-button>
+    </template>
+  </el-dialog>
+</template>     
 
 <script setup>
 import { ref, computed } from 'vue'
-import { Plus, Delete, Search } from '@element-plus/icons-vue'
+import { storeToRefs } from 'pinia'
+import { useCategoryStore } from '@/stores/category'
+import { Plus, Search } from '@element-plus/icons-vue'
+
+const formLabelWidth = '120px'
+const dialogVisible = ref(false)
+const categoryStore = useCategoryStore()
+const { categoryList } = storeToRefs(categoryStore)
 
 const searchValue = ref('')
-
-const categories = ref([
-    { id: 1, name: '技术文章', description: '前端、后端、数据库等技术相关文章', count: 42, color: '#8b5cf6' },
-    { id: 2, name: '生活随笔', description: '日常生活感悟与随想', count: 18, color: '#3b82f6' },
-    { id: 3, name: '项目经验', description: '实际项目开发经验与教训总结', count: 28, color: '#10b981' },
-    { id: 4, name: '学习笔记', description: '各类技术与知识的学习笔记', count: 35, color: '#f59e0b' },
-    { id: 5, name: '资源分享', description: '优质开发工具与学习资源推荐', count: 15, color: '#ef4444' },
-])
+const form = ref({
+    label: '',
+})
 
 const filteredCategories = computed(() => {
-    if (!searchValue.value.trim()) return categories.value
-    return categories.value.filter(item =>
-        item.name.includes(searchValue.value) ||
-        item.description.includes(searchValue.value)
+    if (!searchValue.value.trim()) return categoryList.value
+    return categoryList.value.filter(item =>
+        item.label.includes(searchValue.value)
     )
 })
+
+const emit = defineEmits(['deleteCategory', 'addCategory'])
+const deleteCategory = async (category) => {
+    await categoryStore.deleteCategory(category.id)
+}
+
+const openAddDialog = () => {
+    dialogVisible.value = true
+}
+
+const addCategory = async (form) => {
+    await categoryStore.addCategory(form)
+    dialogVisible.value = false
+    form.label = ''
+}
 </script>
 
 <style scoped lang="less">
@@ -165,17 +169,6 @@ const filteredCategories = computed(() => {
         padding: 8px 16px;
         font-weight: 500;
         transition: all 0.2s ease;
-    }
-
-    .delete-btn {
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-weight: 500;
-        transition: all 0.25s ease;
-
-        &:hover {
-            transform: translateY(-1px);
-        }
     }
 }
 

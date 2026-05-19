@@ -3,25 +3,25 @@
         <div class="page-header">
             <div class="header-left">
                 <h1 class="page-title">内容列表</h1>
-                <p class="page-desc">管理所有文章内容的发布与编辑</p>
+                <p class="page-desc">管理所有内容的发布与编辑</p>
             </div>
         </div>
 
         <el-card class="table-card" shadow="never">
             <template #header>
                 <div class="card-header">
+                    <el-button class="add-btn" type="primary" size="big" @click="openAddDialog">
+                        <el-icon><Plus /></el-icon>
+                        添加内容
+                    </el-button>
                     <div class="search-area">
                         <el-input
                             v-model="article"
-                            placeholder="搜索文章标题或作者"
+                            placeholder="请输入关键词"
                             :prefix-icon="Search"
                             clearable
                             class="search-input"
                         />
-                        <el-select v-model="value" placeholder="选择状态" clearable class="status-select">
-                            <el-option label="已发布" value="published" />
-                            <el-option label="草稿" value="draft" />
-                        </el-select>
                     </div>
                 </div>
             </template>
@@ -33,31 +33,39 @@
                 :row-style="{ fontSize: '14px' }"
                 stripe
             >
-                <el-table-column prop="prop" label="文章标题" min-width="200">
+                <el-table-column prop="prop" label="标题" min-width="200">
                     <template #default="scope">
                         <div class="article-title-cell">
                             <div class="article-icon">
                                 <el-icon><Document /></el-icon>
                             </div>
-                            <span class="article-name">{{ scope.row.prop }}</span>
+                            <span class="article-name">{{ scope.row.title }}</span>
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="author" label="作者" min-width="120">
+                <el-table-column prop="cover" label="封面" min-width="100">
                     <template #default="scope">
-                        <span class="author-text">{{ scope.row.author }}</span>
+                        <div class="cover-cell">
+                            <!-- 图片预览 -->
+                            <img :src="scope.row.cover" alt="封面" class="cover-image"  />
+                        </div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="status" label="状态" min-width="100">
+                <el-table-column prop="category" label="标签" min-width="100">
                     <template #default="scope">
                         <el-tag
-                            :type="scope.row.status === 'published' ? 'success' : 'info'"
+                            type="success"
                             size="small"
                             effect="light"
                             round
                         >
-                            {{ scope.row.status === 'published' ? '已发布' : '草稿' }}
+                            {{ scope.row.category }}
                         </el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="content" label="简介" min-width="200">
+                    <template #default="scope">
+                        {{ scope.row.intro_md }}
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="160" fixed="right">
@@ -75,49 +83,138 @@
                 </el-table-column>
             </el-table>
 
-            <div class="pagination-wrapper">
-                <el-pagination
-                    :current-page="1"
-                    :page-sizes="[10, 20, 50, 100]"
-                    :page-size="10"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="data.length"
-                    background
-                    small
-                />
-            </div>
+            <el-drawer v-model="dialogVisible" title="添加内容" width="450px" destroy-on-close>
+                <el-form :model="form">
+                    <el-form-item label="标题" :label-width="formLabelWidth">
+                        <el-input v-model="form.title" autocomplete="off" />
+                    </el-form-item>
+                    <el-form-item label="标签" :label-width="formLabelWidth">
+                        <el-input-tag v-model="form.category" autocomplete="off" />
+                    </el-form-item>
+                    <el-form-item label="内容" :label-width="formLabelWidth">
+                        <el-input v-model="form.content" style="width: 240px"
+                        placeholder="请输入内容"
+                        type="textarea"
+                        clearable
+                        />
+                    </el-form-item>
+                    <el-form-item label="简介" :label-width="formLabelWidth">
+                        <el-input v-model="form.intro_md" style="width: 240px"
+                        placeholder="请输入简介"
+                        type="textarea"
+                        clearable
+                        />
+                    </el-form-item> 
+                    <el-form-item label="上传封面" :label-width="formLabelWidth">
+                       <el-upload
+                        ref="uploadRef"
+                        action="/api/upload"
+                        class="cover-uploader"
+                        :show-file-list="false"
+                        :auto-upload="false"
+                        :on-change="handleChange"
+                        :limit="1"
+                        >
+                        <div v-if="form.cover" class="cover-wrapper">
+                            <img :src="form.cover" class="cover" />
+                            <span class="cover-delete" @click.stop="removeCover">
+                                <el-icon><Delete /></el-icon>
+                            </span>
+                        </div>
+                        <el-icon v-else><Plus /></el-icon>
+                        </el-upload>
+                    </el-form-item>
+                </el-form>
+                <template #footer>
+                    <el-button @click="dialogVisible = false ">取消</el-button>
+                    <el-button type="primary" @click="addArticle">
+                        确认添加
+                    </el-button>
+                </template>
+            </el-drawer>
         </el-card>
     </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import { Search, Document } from '@element-plus/icons-vue'
+import { Search, Document, Plus, Delete } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { useArticleListStore } from '@/stores/articleList'
+import { storeToRefs } from 'pinia'
 
+const articleListStore = useArticleListStore()
+const { articleList } = storeToRefs(articleListStore)
 const value = ref('');
 const article = ref('');
-const data = ref([
-    { id: 1, prop: '文章1', author: '作者A', status: 'published' },
-    { id: 2, prop: '文章2', author: '作者B', status: 'draft' },
-    { id: 3, prop: '文章3', author: '作者A', status: 'published' },
-    { id: 4, prop: '文章4', author: '作者C', status: 'draft' },
-]);
+const formLabelWidth = '120px';
+const dialogVisible = ref(false);
+const form = ref({
+    title: '',
+    category: '',
+    intro_md: '',
+    cover: ''
+});
+
+const coverFile = ref(null);
+
+const handleChange = (uploadFile) => {
+    const isImage = uploadFile.raw.type === 'image/jpeg' || uploadFile.raw.type === 'image/png';
+    if (!isImage) {
+        ElMessage.error('请上传 JPG 或 PNG 格式的图片');
+        form.value.cover = '';
+        coverFile.value = null;
+    } else {
+        coverFile.value = uploadFile.raw;
+        form.value.cover = URL.createObjectURL(uploadFile.raw);
+    }
+}
+
+const uploadRef = ref(null);
+
+const removeCover = () => {
+    if (form.value.cover) {
+        URL.revokeObjectURL(form.value.cover);
+    }
+    form.value.cover = '';
+    coverFile.value = null;
+    uploadRef.value?.clearFiles();
+}
 
 const filteredData = computed(() => {
-    return data.value.filter(item => {
+    return articleList.value.filter(item => {
         const matchSearch = !article.value
-        || item.prop.includes(article.value)
-        || item.author.includes(article.value)
+        || item.title.includes(article.value)
+        || item.content.includes(article.value)
+        || item.category.includes(article.value)
         const matchStatus = !value.value || item.status === value.value
         return matchSearch && matchStatus;
     });
 });
 
 const deleteArticle = (article) => {
-    const index = data.value.findIndex(item => item.id === article.id)
+    const index = articleList.value.findIndex(item => item.id === article.id)
     if (index !== -1) {
-        data.value.splice(index, 1)
+        articleList.value.splice(index, 1)
     }
+}
+
+const openAddDialog = () => {
+    form.value = { title: '', category: '', content: '', cover: '' }
+    coverFile.value = null
+    dialogVisible.value = true
+}
+
+const addArticle = async () => {
+    const formData = new FormData()
+    formData.append('title', form.value.title)
+    formData.append('category', form.value.category)
+    formData.append('content', form.value.content)
+    if (coverFile.value) {
+        formData.append('coverFile', coverFile.value)
+    }
+    await articleListStore.addArticle(formData)
+    dialogVisible.value = false
 }
 </script>
 
@@ -183,23 +280,12 @@ const deleteArticle = (article) => {
             }
         }
     }
-
-    .status-select {
-        width: 140px;
-
-        :deep(.el-input__wrapper) {
-            border-radius: 8px;
-            box-shadow: 0 0 0 1px #e5e7eb inset;
-            transition: all 0.25s;
-
-            &:hover {
-                box-shadow: 0 0 0 1px #c4b5fd inset;
-            }
-
-            &.is-focus {
-                box-shadow: 0 0 0 1px #8b5cf6 inset, 0 0 0 3px rgba(139, 92, 246, 0.1);
-            }
-        }
+    .add-btn {
+        margin-right: auto;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 500;
+        transition: all 0.2s ease;
     }
 }
 
@@ -247,12 +333,6 @@ const deleteArticle = (article) => {
     }
 }
 
-.pagination-wrapper {
-    display: flex;
-    justify-content: flex-end;
-    padding: 16px 0 4px 0;
-}
-
 :deep(.el-table) {
     --el-table-border-color: #f1f5f9;
     border-radius: 8px;
@@ -264,6 +344,59 @@ const deleteArticle = (article) => {
 
     .el-table__row:hover > td {
         background: #faf5ff !important;
+    }
+}
+
+.cover-uploader {
+    :deep(.el-upload) {
+        width: 120px;
+        height: 120px;
+        border: 1px dashed #d9d9d9;
+        border-radius: 8px;
+        cursor: pointer;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: border-color 0.3s;
+
+        &:hover {
+            border-color: #8b5cf6;
+        }
+    }
+
+    .cover-wrapper {
+        position: relative;
+        width: 120px;
+        height: 120px;
+
+        .cover {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .cover-delete {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 24px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            cursor: pointer;
+        }
+
+        &:hover .cover-delete {
+            opacity: 1;
+        }
     }
 }
 </style>
