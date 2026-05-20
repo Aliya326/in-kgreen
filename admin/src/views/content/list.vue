@@ -47,7 +47,7 @@
                     <template #default="scope">
                         <div class="cover-cell">
                             <!-- 图片预览 -->
-                            <img :src="scope.row.cover" alt="封面" class="cover-image"  />
+                            <img :src="scope.row.cover_image || scope.row.cover" alt="封面" class="cover-image"  />
                         </div>
                     </template>
                 </el-table-column>
@@ -152,9 +152,11 @@ const dialogVisible = ref(false);
 const form = ref({
     title: '',
     category: '',
+    content: '',
     intro_md: '',
-    cover: ''
-});
+    cover: '',
+    status: '',
+})
 
 const coverFile = ref(null);
 
@@ -200,7 +202,7 @@ const deleteArticle = (article) => {
 }
 
 const openAddDialog = () => {
-    form.value = { title: '', category: '', content: '', cover: '' }
+    form.value = { title: '', category: '', content: '', intro_md: '', cover: '', status: '' }
     coverFile.value = null
     dialogVisible.value = true
 }
@@ -210,6 +212,7 @@ const addArticle = async () => {
     formData.append('title', form.value.title)
     formData.append('category', form.value.category)
     formData.append('content', form.value.content)
+    formData.append('intro_md', form.value.intro_md)
     if (coverFile.value) {
         formData.append('coverFile', coverFile.value)
     }

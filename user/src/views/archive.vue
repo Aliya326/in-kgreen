@@ -17,37 +17,38 @@
         </a-input>
         </div>
         <a-empty v-if="grouped.length === 0" description="没有匹配到内容" />
-        <a-timeline v-else>
-          <a-timeline-item
-            v-for="group in grouped"
-            :key="group.time"
-            :datetime="group.time"
-          >
-            <div class="timeline-title">
-              {{ group.time }}
-              <span class="count-badge">{{ group.items.length }}</span>
-            </div>
-            <router-link
-              v-for="file in group.items"
-              :key="file.id"
-              class="archive-link"
-              :to="`/atPages/${file.id}`"
-            >
-              {{ file.title }}
-            </router-link>
-          </a-timeline-item>
-        </a-timeline>
+        <a-collapse v-else v-model:activeKey="activeKey" class="archive-collapse">
+          <a-collapse-panel v-for="group in grouped" :key="group.time">
+            <template #header>
+              <div class="panel-header">
+                <span class="panel-title">{{ group.time }}</span>
+                <span class="count-badge">{{ group.items.length }}</span>
+              </div>
+            </template>
+            <a-list :data-source="group.items" item-layout="horizontal" class="archive-list">
+              <template #renderItem="{ item }">
+                <a-list-item>
+                  <router-link class="archive-link" :to="`/atPages/${item.id}`">
+                    <span class="item-date">{{ item.publishDate || '未知日期' }}</span>
+                    <span class="item-title">{{ item.title }}</span>
+                  </router-link>
+                </a-list-item>
+              </template>
+            </a-list>
+          </a-collapse-panel>
+        </a-collapse>
       </div>
     </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { SearchOutlined } from '@ant-design/icons-vue'
 import { useArticleStore } from '@/stores/ArticleList'
 import { storeToRefs } from 'pinia'
 
 const value = ref('')
+const activeKey = ref([])
 const articleStore = useArticleStore()
 const { articleList } = storeToRefs(articleStore)
 
@@ -65,12 +66,31 @@ const filteredList = computed(() => {
 const grouped = computed(() => {
   const map = new Map()
   filteredList.value.forEach((item) => {
-    const key = item.publishDate || '未知日期'
+    const date = (item.publishDate || '').toString()
+    const key = date ? date.slice(0, 7) : '未知日期'
     if (!map.has(key)) map.set(key, { time: key, items: [] })
     map.get(key).items.push(item)
   })
-  return [...map.values()].sort((a, b) => (a.time < b.time ? 1 : -1))
+  const groups = [...map.values()].map((group) => {
+    return {
+      ...group,
+      items: group.items.sort((a, b) => ((a.publishDate || '') < (b.publishDate || '') ? 1 : -1)),
+    }
+  })
+  return groups.sort((a, b) => {
+    if (a.time === '未知日期') return 1
+    if (b.time === '未知日期') return -1
+    return a.time < b.time ? 1 : -1
+  })
 })
+
+watch(
+  grouped,
+  (val) => {
+    if (activeKey.value.length === 0 && val.length > 0) activeKey.value = [val[0].time]
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>
@@ -102,23 +122,49 @@ const grouped = computed(() => {
   padding: 0 24px;
 }
 
-.timeline-title {
-  font-size: 16px;
-  font-weight: 600;
+.archive-collapse :deep(.ant-collapse-item) {
+  border: none;
+}
+
+.archive-collapse :deep(.ant-collapse-header) {
+  padding: 12px 0;
+}
+
+.archive-collapse :deep(.ant-collapse-content-box) {
+  padding: 0 0 12px;
+}
+
+.panel-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .archive-link {
-  display: block;
-  padding: 4px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
   color: var(--text-secondary);
   text-decoration: none;
 }
 .archive-link:hover {
   color: var(--color-badge);
+}
+
+.item-date {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.item-title {
+  flex: 1;
 }
 
 .count-badge {

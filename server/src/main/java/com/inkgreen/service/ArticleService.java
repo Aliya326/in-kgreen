@@ -24,8 +24,9 @@ public class ArticleService {
         return articleMapper.findById(id);
     }
 
-    public void addArticle(Article article) {
+    public Article addArticle(Article article) {
         article.setPublishTime(LocalDate.now());
         articleMapper.insert(article);
+        return article;
     }
 }

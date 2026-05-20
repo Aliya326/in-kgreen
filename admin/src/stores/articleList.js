@@ -16,9 +16,7 @@ export const useArticleListStore = defineStore('articleList', () => {
 
   const addArticle = async (formData) => {
     try {
-      const res = await request.post('/articles/add', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
+      const res = await request.post('/articles/add', formData)
       articleList.value.push(res)
     } catch (error) {
       console.error('添加数据失败：', error)

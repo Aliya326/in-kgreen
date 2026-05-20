@@ -16,11 +16,13 @@
             @click="handlePage(item)"
             >
               <template #cover>
-                  <a-image :src="item.cover_image" :preview="false"/>
+                <div class="cover-wrap">
+                  <a-image class="cover-image" :src="item.cover_image" :preview="false" />
+                </div>
               </template>
               <p>{{ item.title }}</p>
               <a-divider/>
-              <a-tag color="processing">{{ item.category }}</a-tag>
+              <a-tag color="processing">{{ item.category || '未分类' }}</a-tag>
             </a-card>
           </a-col>
         </a-row>
@@ -68,17 +70,20 @@ const handlePage = (item) => {
 }
 .card {
     width: 100%;
-    height: 100%;
-    min-height: 200px;
     min-width: 200px;
     border-radius: 10px;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.card :deep(.ant-card-cover) {
+    flex: 0 0 auto;
 }
 .card :deep(.ant-card-body) {
     display: flex;
     flex-direction: column;
     flex: 1;
-    height: 100%;
+    min-height: 0;
 }
 .card :deep(.ant-card-body) > p {
     flex: 1;
@@ -89,5 +94,24 @@ const handlePage = (item) => {
 }
 .card :deep(.ant-card-body) > .ant-tag {
     align-self: flex-start;
+}
+.cover-wrap {
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+.cover-wrap :deep(.ant-image) {
+    width: 100%;
+    height: 100%;
+}
+.cover-wrap :deep(.ant-image-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.cover-image {
+    width: 100%;
+    height: 100%;
 }
 </style>
