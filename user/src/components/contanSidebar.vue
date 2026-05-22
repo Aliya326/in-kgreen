@@ -30,25 +30,20 @@ const categoryList = computed(() =>
   (categoryStore.categoryListData || []).filter(item => item.label !== '全部')
 )
 
-const user = {
-  name: 'in-kgreen',
-  description: '91',
-  avatar: 'https://joeschmoe.io/api/v1/random',
-  github: 'https://github.com/',
-}
+import { useUserStore } from '@/stores/user.js'
+const userStore = useUserStore()
+const user = computed(() => userStore.user)
 
 const handleClick = () => {
-  window.open(user.github, '_blank')
+  const url = user.value.github
+  if (url) window.open(url, '_blank')
 }
 </script>
 
 <style scoped>
 .a-card {
-   width: 300px;
-    height: 200px;
-    /*随内容滚动 */
+    width: 300px;
     position: relative;
-    /*flex-shrink: 0;使卡片不缩放，保持固定高度*/
     flex-shrink: 0;
 }
 </style>

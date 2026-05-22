@@ -1,13 +1,18 @@
 <template>
     <div class="category">
       <div class="category-header">
-            <a-tabs v-model:activeKey="category" style="margin-left: 10px">
-                <a-tab-pane 
+            <div class="category-tabs">
+              <button
                 v-for="item in categoryListData"
                 :key="item.value"
-                :tab="item.label"
-                />
-            </a-tabs>
+                type="button"
+                class="category-tab"
+                :class="{ active: category === item.value }"
+                @click="category = item.value"
+              >
+                {{ item.label }}
+              </button>
+            </div>
       </div>        
         <a-row :gutter="[12, 12]" v-if="categoryList.length > 0">
           <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in categoryList" :key="item.id">
@@ -17,7 +22,7 @@
             >
               <template #cover>
                 <div class="cover-wrap">
-                  <a-image class="cover-image" :src="item.cover_image" :preview="false" />
+                  <img v-lazy="item.cover_image" class="cover-img" alt="cover" />
                 </div>
               </template>
               <p>{{ item.title }}</p>
@@ -68,6 +73,48 @@ const handlePage = (item) => {
     align-items: center;
     margin-top: 68px;
 }
+.category-tabs {
+    display: flex;
+    gap: 28px;
+    width: 100%;
+    padding-left: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border-secondary);
+    scrollbar-width: none;
+}
+.category-tabs::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+.category-tab {
+    flex: 0 0 auto;
+    padding: 12px 0;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 16px;
+    position: relative;
+}
+.category-tab:hover {
+    color: var(--color-badge);
+}
+.category-tab.active {
+    color: var(--color-badge);
+    font-weight: 500;
+}
+.category-tab.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--color-badge);
+    border-radius: 2px;
+}
 .card {
     width: 100%;
     min-width: 200px;
@@ -101,17 +148,10 @@ const handlePage = (item) => {
     overflow: hidden;
     border-radius: 8px;
 }
-.cover-wrap :deep(.ant-image) {
-    width: 100%;
-    height: 100%;
-}
-.cover-wrap :deep(.ant-image-img) {
+.cover-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-.cover-image {
-    width: 100%;
-    height: 100%;
+    display: block;
 }
 </style>

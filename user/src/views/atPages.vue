@@ -9,7 +9,13 @@
       <template v-else>
         <a-card class="header" :title="data.title">
           <div class="header-content">
-              <img v-lazy="data.cover_image" alt="cover"/>
+              <a-image-preview-group>
+                <a-image
+                  v-if="data.cover_image"
+                  :src="data.cover_image"
+                  class="cover-image"
+                />
+              </a-image-preview-group>
               <span>{{ data.content }}</span>
           </div>
         </a-card>
@@ -65,9 +71,16 @@ const introHtml = computed(() => {
     align-items: center;
     gap: 16px;
 }
-.header-content img {
-    max-width: 240px;
+.cover-image {
+    flex: 0 0 auto;
+    width: 240px;
+    max-width: 40%;
+}
+.cover-image :deep(.ant-image-img) {
+    width: 100%;
+    height: auto;
     border-radius: 8px;
+    display: block;
 }
 .header-content span {
     flex: 1;
@@ -86,5 +99,84 @@ const introHtml = computed(() => {
 .md-body :deep(h2),
 .md-body :deep(h3) {
     margin-top: 12px;
+}
+.md-body {
+    color: var(--text-primary);
+    line-height: 1.8;
+    font-size: 14px;
+}
+.md-body :deep(p) {
+    margin: 0 0 12px;
+    color: var(--text-secondary);
+}
+.md-body :deep(a) {
+    color: var(--color-badge);
+    text-decoration: none;
+}
+.md-body :deep(a:hover) {
+    text-decoration: underline;
+}
+.md-body :deep(ul),
+.md-body :deep(ol) {
+    padding-left: 1.2em;
+    margin: 0 0 12px;
+}
+.md-body :deep(li) {
+    margin: 6px 0;
+    color: var(--text-secondary);
+}
+.md-body :deep(blockquote) {
+    margin: 0 0 12px;
+    padding: 8px 12px;
+    border-left: 3px solid var(--color-badge);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    border-radius: 6px;
+}
+.md-body :deep(hr) {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 16px 0;
+}
+.md-body :deep(code) {
+    padding: 2px 6px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 13px;
+}
+.md-body :deep(pre) {
+    margin: 0 0 12px;
+    padding: 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: auto;
+}
+.md-body :deep(pre code) {
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+.md-body :deep(img) {
+    max-width: 100%;
+    border-radius: 10px;
+    display: block;
+    margin: 8px 0;
+}
+.md-body :deep(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 12px;
+}
+.md-body :deep(th),
+.md-body :deep(td) {
+    border: 1px solid var(--border-color);
+    padding: 8px 10px;
+}
+.md-body :deep(th) {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    text-align: left;
 }
 </style>

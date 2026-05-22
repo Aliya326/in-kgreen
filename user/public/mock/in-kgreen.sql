@@ -17,8 +17,7 @@ CREATE TABLE IF NOT EXISTS articles (
 INSERT INTO categories (label, value) VALUES
     ('全部', '全部'),
     ('分类1', '分类1'),
-    ('分类2', '分类2'),
-    ('分类3', '分类3');
+    ('分类2', '分类2');
 
 INSERT INTO articles (id, title, content, publish_time, category, cover_image, intro_md) VALUES
   (1, '第一个', '卢本伟', '2024-06-01', '分类1', 'https://img.zhaoyl.com/2024/06/01/64b8c9e1a0c3f.jpg', '# 标题\n\n这是简介的 **Markdown** 内容\n\n- 要点1\n- 要点2'),

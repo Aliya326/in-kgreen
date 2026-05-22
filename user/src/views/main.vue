@@ -1,10 +1,12 @@
 <template>
-    <appHeader/>
-    <router-view v-slot="{ Component }">
-        <Transition name="fade-slide" mode="out-in">
-            <component :is="Component" :key="Component.name"  />
-        </Transition>
-    </router-view>
+    <div class="main-content">
+        <appHeader/>
+        <router-view v-slot="{ Component, route }">
+            <Transition name="fade-slide" mode="out-in">
+                <component :is="Component" :key="route.path" />
+            </Transition>
+        </router-view>
+    </div>
 </template>
 <script setup>
 import appHeader from '@/ui/header.vue'
@@ -13,7 +15,7 @@ import appHeader from '@/ui/header.vue'
 
 <style scoped>
 .main-content {
-    padding-top: 66px;
+  padding-top: 66px;
 }
 .fade-slide-enter-active, .fade-slide-leave-active {
   transition: opacity 0.3s ease, transform 0.3s ease;

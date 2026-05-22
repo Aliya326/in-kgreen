@@ -10,13 +10,16 @@
           <a-list-item-meta :description="item.content">
             <template #title>
               <router-link :to="`/atPages/${item.id}`">
-                <HighlightText :text="item.title" :keyword="keyword" />
+                <HighlightText :text="item.title" :keyword="keyword"/>
               </router-link>
             </template>
             <template #avatar>
-              <img class="thumb" :src="item.cover_image" alt="thumb" />
+              <img class="thumb" v-lazy="item.cover_image" alt="thumb" />
             </template>
           </a-list-item-meta>
+          <template #extra>
+            <a-tag :bordered="false" color="processing">{{item.category}}</a-tag>
+          </template>
         </a-list-item>
       </template>
       <template #emptyText>

@@ -17,7 +17,7 @@
               >
                 <template #cover>
                   <div class="cover-wrap">
-                    <a-image class="cover-image" :src="item.cover_image" :preview="false" />
+                    <img v-lazy="item.cover_image" class="cover-img" alt="cover" />
                   </div>
                 </template>
                 <p>{{ item.title }}</p>
@@ -116,17 +116,10 @@ const handlePage = (item) => {
     overflow: hidden;
     border-radius: 8px;
 }
-.cover-wrap :deep(.ant-image) {
-    width: 100%;
-    height: 100%;
-}
-.cover-wrap :deep(.ant-image-img) {
+.cover-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-.cover-image {
-    width: 100%;
-    height: 100%;
+    display: block;
 }
 </style>

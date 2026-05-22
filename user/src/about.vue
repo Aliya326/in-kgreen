@@ -3,17 +3,17 @@
     <div class="about-container">
       <a-card class="about-card">
         <a-card-meta
-          title="关于我"
-          description="91"
+          :title="user.name"
+          :description="user.description"
         >
           <template #avatar>
-            <a-avatar :size="64" src="https://joeschmoe.io/api/v1/random" />
+            <a-avatar :size="64" :src="user.avatar || undefined" />
           </template>
         </a-card-meta>
         <a-divider />
         <div class="about-section">
           <h3>关于本站</h3>
-          <p>91</p>
+          <p>一个基于 Vue 3 的个人博客，记录技术思考与生活感悟。</p>
         </div>
         <a-divider />
         <div class="about-section">
@@ -31,7 +31,7 @@
         <div class="about-section">
           <h3>联系方式</h3>
           <a-space :size="16">
-            <a href="https://github.com/" target="_blank">
+            <a v-if="user.github" :href="user.github" target="_blank">
               <GithubOutlined style="font-size: 24px" />
             </a>
           </a-space>
@@ -42,7 +42,12 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { GithubOutlined } from '@ant-design/icons-vue'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
+const user = computed(() => userStore.user)
 </script>
 
 <style scoped>

@@ -46,8 +46,14 @@
                 <el-table-column prop="cover" label="封面" min-width="100">
                     <template #default="scope">
                         <div class="cover-cell">
-                            <!-- 图片预览 -->
-                            <img :src="scope.row.cover_image || scope.row.cover" alt="封面" class="cover-image"  />
+                            <el-image
+                                v-if="getCoverUrl(scope.row)"
+                                :src="getCoverUrl(scope.row)"
+                                :preview-src-list="[getCoverUrl(scope.row)]"
+                                fit="contain"
+                                preview-teleported
+                                class="cover-image"
+                            />
                         </div>
                     </template>
                 </el-table-column>
@@ -219,6 +225,8 @@ const addArticle = async () => {
     await articleListStore.addArticle(formData)
     dialogVisible.value = false
 }
+
+const getCoverUrl = (row) => row?.cover_image || row?.cover || ''
 </script>
 
 <style scoped lang="less">
@@ -400,6 +408,30 @@ const addArticle = async () => {
         &:hover .cover-delete {
             opacity: 1;
         }
+    }
+}
+
+.cover-cell {
+    width: 96px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.cover-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+
+    :deep(.el-image__inner) {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
     }
 }
 </style>
