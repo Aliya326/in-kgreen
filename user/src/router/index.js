@@ -12,17 +12,20 @@ const router = createRouter({
           {
             path:"/home",
             name:"home",
-            component:()=>import("@/views/home.vue")
+            component:()=>import("@/views/home.vue"),
+            meta:{ prefetch:["articles","category"] }
           },
           {
             path:"/archive",
             name:"archive",
-            component:()=>import("@/views/archive.vue")
+            component:()=>import("@/views/archive.vue"),
+            meta:{ prefetch:["articles"] }
           },
           {
             path:"/atPages/:id",
             name:"atPages",
-            component:()=>import("@/views/atPages.vue")
+            component:()=>import("@/views/atPages.vue"),
+            meta:{ prefetch:["articles"] }
           },
           {
             path:"/about",
@@ -32,14 +35,15 @@ const router = createRouter({
           {
             path:"/goableSearch",
             name:"goableSearch",
-            component:()=>import("@/views/goableSearch.vue")
+            component:()=>import("@/views/goableSearch.vue"),
+            meta:{ prefetch:["articles"] }
           },
           {
             path:"/category",
             name:"category",
-            component:()=>import("@/views/category.vue")
+            component:()=>import("@/views/category.vue"),
+            meta:{ prefetch:["category","articles"] }
           },
-          
         ]
       },
       {
@@ -47,7 +51,6 @@ const router = createRouter({
         name:"not-found",
         component:()=>import("@/404.vue")
       },
-
     ]
 })
 

@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useArticleListStore } from '@/stores/articleList'
 import { useCategoryStore } from '@/stores/category'
 
@@ -9,6 +9,12 @@ const categoryStore = useCategoryStore()
 onMounted(() => {
     articleListStore.getArticleList()
     categoryStore.getCategoryList()
+})
+
+watch(articleListStore, (newVal) => {
+  articleListStore.getArticleList()
+  categoryStore.getCategoryList()
+  console.log('变化了', newVal)
 })
 </script>
 

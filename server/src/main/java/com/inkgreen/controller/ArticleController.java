@@ -2,9 +2,11 @@ package com.inkgreen.controller;
 
 import com.inkgreen.entity.Article;
 import com.inkgreen.service.ArticleService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
@@ -40,6 +42,7 @@ public class ArticleController {
             @RequestParam("category") String category,
             @RequestParam("content") String content,
             @RequestParam(value = "intro_md", required = false) String introMd,
+            @RequestParam(value = "download_url", required = false) String downloadUrl,
             @RequestPart(value = "coverFile", required = false) MultipartFile coverFile
     ) throws IOException {
         Article article = new Article();
@@ -47,6 +50,7 @@ public class ArticleController {
         article.setCategory(category);
         article.setContent(content);
         article.setIntroMd(introMd);
+        article.setDownloadUrl(downloadUrl);
 
         if (coverFile != null && !coverFile.isEmpty()) {
             String contentType = coverFile.getContentType();
@@ -75,6 +79,61 @@ public class ArticleController {
         }
 
         return articleService.addArticle(article);
+    }
+
+    @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void update(
+            @RequestParam("id") Integer id,
+            @RequestParam("title") String title,
+            @RequestParam("category") String category,
+            @RequestParam("content") String content,
+            @RequestParam(value = "intro_md", required = false) String introMd,
+            @RequestParam(value = "download_url", required = false) String downloadUrl,
+            @RequestPart(value = "coverFile", required = false) MultipartFile coverFile
+    ) throws IOException {
+        Article old = articleService.findById(id);
+        if (old == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found");
+        }
+
+        Article article = new Article();
+        article.setId(id);
+        article.setTitle(title);
+        article.setCategory(category);
+        article.setContent(content);
+        article.setIntroMd(introMd);
+        article.setDownloadUrl(downloadUrl);
+        article.setPublishTime(old.getPublishTime());
+
+        if (coverFile != null && !coverFile.isEmpty()) {
+            String contentType = coverFile.getContentType();
+            if (contentType != null && !MediaType.IMAGE_JPEG_VALUE.equals(contentType) && !MediaType.IMAGE_PNG_VALUE.equals(contentType)) {
+                throw new IllegalArgumentException("Only JPG/PNG images are supported");
+            }
+
+            Path uploadDir = Paths.get(System.getProperty("user.dir"), "uploads");
+            Files.createDirectories(uploadDir);
+
+            String originalName = coverFile.getOriginalFilename();
+            String ext = "";
+            if (originalName != null) {
+                int dot = originalName.lastIndexOf('.');
+                if (dot >= 0 && dot < originalName.length() - 1) {
+                    ext = originalName.substring(dot);
+                }
+            }
+
+            String fileName = UUID.randomUUID() + ext;
+            Path dest = uploadDir.resolve(fileName).normalize();
+            coverFile.transferTo(dest);
+
+            String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+            article.setCoverImage(baseUrl + "/uploads/" + fileName);
+        } else {
+            article.setCoverImage(old.getCoverImage());
+        }
+
+        articleService.update(article);
     }
 
     @DeleteMapping("/{id:\\d+}")

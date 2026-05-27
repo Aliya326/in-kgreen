@@ -24,4 +24,7 @@ public class Article {
 
     @JsonProperty("intro_md")
     private String introMd;
+
+    @JsonProperty("download_url")
+    private String downloadUrl;
 }

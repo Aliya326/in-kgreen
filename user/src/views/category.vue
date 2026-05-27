@@ -3,6 +3,14 @@
       <div class="category-header">
             <div class="category-tabs">
               <button
+                type="button"
+                class="category-tab"
+                :class="{ active: category === '全部' }"
+                @click="category = '全部'"
+              >
+                全部
+              </button>
+              <button
                 v-for="item in categoryListData"
                 :key="item.value"
                 type="button"
@@ -43,15 +51,15 @@ import { useCategoryStore } from '@/stores/category'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const category = ref("全部")
 const articleStore = useArticleStore()
 const categoryStore = useCategoryStore()
-const category = ref("全部")
 
 const { articleList } = storeToRefs(articleStore)
 const { categoryListData } = storeToRefs(categoryStore)
 
 const categoryList = computed(() => {
-    if (category.value === "全部") return articleList.value
+  if (category.value === "全部") return articleList.value
     return articleList.value.filter(item => item.category === category.value)
 })
 

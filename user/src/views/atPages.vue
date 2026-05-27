@@ -22,8 +22,12 @@
         <a-card class="introduction" title="简介">
           <div class="md-body" v-html="introHtml"></div>
         </a-card>
-        <a-card class="download" title="下载">
-          <a-empty description="暂无可下载资源" />
+        <a-card class="download" title="下载" >
+          <div v-if="data.download_url" class="download-content">
+            <span>下载地址：</span>
+            <a-button  type="primary" :href="data.download_url" target="_blank">点击下载</a-button>
+          </div>
+          <a-empty v-else description="暂无可下载资源" />
         </a-card>
       </template>
     </div>

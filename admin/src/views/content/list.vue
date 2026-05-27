@@ -82,7 +82,7 @@
                 <el-table-column label="操作" width="160" fixed="right">
                     <template #default="scope">
                         <div class="action-buttons">
-                            <el-button type="primary" size="small" link>
+                            <el-button type="primary" size="small" link @click="openEditDialog(scope.row)">
                                 编辑
                             </el-button>
                             <el-divider direction="vertical" />
@@ -100,7 +100,12 @@
                         <el-input v-model="form.title" autocomplete="off" />
                     </el-form-item>
                     <el-form-item label="标签" :label-width="formLabelWidth">
-                        <el-input-tag v-model="form.category" autocomplete="off" />
+                        <el-select v-model="form.category" placeholder="请选择标签">
+                            <el-option v-for="category in categoryOptions" 
+                            :key="category.value"
+                            :label="category.label"
+                            :value="category.value" />
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="内容" :label-width="formLabelWidth">
                         <el-input v-model="form.content" style="width: 240px"
@@ -116,6 +121,9 @@
                         clearable
                         />
                     </el-form-item> 
+                    <el-form-item label="下载链接" :label-width="formLabelWidth">
+                        <el-input v-model="form.download_url" autocomplete="off" />
+                    </el-form-item>
                     <el-form-item label="上传封面" :label-width="formLabelWidth">
                        <el-upload
                         ref="uploadRef"
@@ -138,8 +146,11 @@
                 </el-form>
                 <template #footer>
                     <el-button @click="dialogVisible = false ">取消</el-button>
-                    <el-button type="primary" @click="addArticle">
+                    <el-button v-if="isAdd" type="primary" @click="addArticle">
                         确认添加
+                    </el-button>
+                    <el-button v-else type="primary" @click="updateArticle">
+                        确认修改
                     </el-button>
                 </template>
             </el-drawer>
@@ -152,9 +163,12 @@ import { ref, computed } from 'vue'
 import { Search, Document, Plus, Delete } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useArticleListStore } from '@/stores/articleList'
+import { useCategoryStore } from '@/stores/category'
 import { storeToRefs } from 'pinia'
 
+const categoryStore = useCategoryStore()
 const articleListStore = useArticleListStore()
+const { categoryList } = storeToRefs(categoryStore)
 const { articleList } = storeToRefs(articleListStore)
 const value = ref('');
 const article = ref('');
@@ -167,10 +181,12 @@ const form = ref({
     intro_md: '',
     cover: '',
     status: '',
+    download_url: '',
 })
 
 const coverFile = ref(null);
 
+// 上传封面
 const handleChange = (uploadFile) => {
     const isImage = uploadFile.raw.type === 'image/jpeg' || uploadFile.raw.type === 'image/png';
     if (!isImage) {
@@ -194,6 +210,7 @@ const removeCover = () => {
     uploadRef.value?.clearFiles();
 }
 
+// 过滤文章
 const filteredData = computed(() => {
     const data = articleList.value.filter(item => {
         const matchSearch = !article.value
@@ -209,6 +226,15 @@ const filteredData = computed(() => {
     }))
 });
 
+// 标签选项
+const categoryOptions = computed(() => {
+    return categoryList.value.map(item => ({
+        label: item.label,
+        value: item.value,
+    }))
+})
+
+// 删除文章
 const deleteArticle = (article) => {
     const index = articleList.value.findIndex(item => item.id === article.id)
     if (index !== -1) {
@@ -216,22 +242,54 @@ const deleteArticle = (article) => {
     }
 }
 
+// 打开添加文章弹窗
 const openAddDialog = () => {
-    form.value = { title: '', category: '', content: '', intro_md: '', cover: '', status: '' }
+    form.value = { title: '', category: '', content: '', intro_md: '', cover: '', status: '', download_url: '' }
     coverFile.value = null
     dialogVisible.value = true
 }
 
+// 打开修改文章弹窗
+const openEditDialog = (article) => {
+    form.value = { ...article }
+    coverFile.value = null
+       dialogVisible.value = true
+}
+const isAdd = ref()
+// 添加文章
 const addArticle = async () => {
+    isAdd.value = true
     const formData = new FormData()
     formData.append('title', form.value.title)
     formData.append('category', form.value.category)
     formData.append('content', form.value.content)
     formData.append('intro_md', form.value.intro_md)
+    if (form.value.download_url) {
+        formData.append('download_url', form.value.download_url)
+    }
     if (coverFile.value) {
         formData.append('coverFile', coverFile.value)
     }
     await articleListStore.addArticle(formData)
+    dialogVisible.value = false
+}
+
+// 修改文章
+const updateArticle = async () => {
+    isAdd.value = false
+    const formData = new FormData()
+    formData.append('id', form.value.id)
+    formData.append('title', form.value.title)
+    formData.append('category', form.value.category)
+    formData.append('content', form.value.content)
+    formData.append('intro_md', form.value.intro_md)
+    if (form.value.download_url) {
+        formData.append('download_url', form.value.download_url)
+    }
+    if (coverFile.value) {
+        formData.append('coverFile', coverFile.value)
+    }
+    await articleListStore.updateArticle(formData)
     dialogVisible.value = false
 }
 
