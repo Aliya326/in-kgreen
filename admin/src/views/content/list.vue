@@ -33,6 +33,11 @@
                 :row-style="{ fontSize: '14px' }"
                 stripe
             >
+                <el-table-column prop="row_number" label="序号" width="80">
+                    <template #default="scope">
+                        <span class="index-badge">{{ scope.row.row_number }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="prop" label="标题" min-width="200">
                     <template #default="scope">
                         <div class="article-title-cell">
@@ -190,7 +195,7 @@ const removeCover = () => {
 }
 
 const filteredData = computed(() => {
-    return articleList.value.filter(item => {
+    const data = articleList.value.filter(item => {
         const matchSearch = !article.value
         || item.title.includes(article.value)
         || item.content.includes(article.value)
@@ -198,12 +203,16 @@ const filteredData = computed(() => {
         const matchStatus = !value.value || item.status === value.value
         return matchSearch && matchStatus;
     });
+    return data.map((item, index) => ({
+        ...item,
+        row_number: index + 1,
+    }))
 });
 
 const deleteArticle = (article) => {
     const index = articleList.value.findIndex(item => item.id === article.id)
     if (index !== -1) {
-        articleList.value.splice(index, 1)
+        articleListStore.deleteArticle(article.id)
     }
 }
 
@@ -322,6 +331,19 @@ const getCoverUrl = (row) => row?.cover_image || row?.cover || ''
         font-weight: 500;
         color: #1f2937;
     }
+}
+
+.index-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 .author-text {

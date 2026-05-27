@@ -30,14 +30,14 @@
 
             <el-table
                 style="width: 100%"
-                :data="filteredCategories"
+                :data="displayCategories"
                 :header-cell-style="{ background: '#f8fafc', color: '#475569', fontWeight: '600', fontSize: '13px' }"
                 :row-style="{ fontSize: '14px' }"
                 stripe
             >
-                <el-table-column prop="id" label="ID" width="80">
+                <el-table-column prop="row_number" label="序号" width="80">
                     <template #default="scope">
-                        <span class="id-badge">{{ scope.row.id }}</span>
+                        <span class="id-badge">{{ scope.row.row_number }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="label" label="分类名称" min-width="160">
@@ -101,6 +101,13 @@ const filteredCategories = computed(() => {
     return categoryList.value.filter(item =>
         item.label.includes(searchValue.value)
     )
+})
+
+const displayCategories = computed(() => {
+    return filteredCategories.value.map((item, index) => ({
+        ...item,
+        row_number: index + 1,
+    }))
 })
 
 const emit = defineEmits(['deleteCategory', 'addCategory'])

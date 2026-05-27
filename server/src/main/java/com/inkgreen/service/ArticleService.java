@@ -29,4 +29,8 @@ public class ArticleService {
         articleMapper.insert(article);
         return article;
     }
+
+    public void deleteById(Integer id) {
+        articleMapper.deleteById(id);
+    }
 }

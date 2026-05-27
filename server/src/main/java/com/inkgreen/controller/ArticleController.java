@@ -76,4 +76,9 @@ public class ArticleController {
 
         return articleService.addArticle(article);
     }
+
+    @DeleteMapping("/{id:\\d+}")
+    public void delete(@PathVariable Integer id) {
+        articleService.deleteById(id);
+    }
 }

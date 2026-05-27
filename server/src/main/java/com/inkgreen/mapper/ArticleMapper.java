@@ -27,4 +27,7 @@ public interface ArticleMapper {
     @Insert("INSERT INTO articles (title, content, publish_time, category, cover_image, intro_md) VALUES (#{title}, #{content}, #{publishTime}, #{category}, #{coverImage}, #{introMd})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(Article article);
+
+    @Delete("DELETE FROM articles WHERE id = #{id}")
+    void deleteById(Integer id);
 }

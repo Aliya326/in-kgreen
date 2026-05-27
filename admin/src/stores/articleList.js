@@ -22,10 +22,23 @@ export const useArticleListStore = defineStore('articleList', () => {
       console.error('添加数据失败：', error)
     }
   }
+
+  const deleteArticle = async (id) => {
+    try {
+      await request.delete(`/articles/${id}`)
+      articleList.value = articleList.value.filter(item => item.id !== id)
+      ElMessage.success('删除成功')
+    } catch (error) {
+      console.error('删除数据失败：', error)
+      ElMessage.error('删除失败')
+    }
+  }
+
   return {
     articleList,
     getArticleList,
-    addArticle
+    addArticle,
+    deleteArticle
   }
 })
 export default useArticleListStore
