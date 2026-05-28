@@ -1,5 +1,6 @@
 package com.inkgreen.controller;
 
+import com.inkgreen.dto.PageResult;
 import com.inkgreen.entity.Article;
 import com.inkgreen.service.ArticleService;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,17 @@ public class ArticleController {
     @GetMapping("/list")
     public List<Article> list() {
         return articleService.findAll();
+    }
+
+    @GetMapping("/page")
+    public PageResult<Article> page(
+            @RequestParam(value = "pageNo", required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "month", required = false) String month
+    ) {
+        return articleService.findPage(pageNo, pageSize, keyword, category, month);
     }
 
     @GetMapping("/{id:\\d+}")

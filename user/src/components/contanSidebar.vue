@@ -23,20 +23,19 @@
 <script setup>
 import { computed } from 'vue'
 import { GithubOutlined } from '@ant-design/icons-vue';
-import { useCategoryStore } from '@/stores/category.js'
-
-const categoryStore = useCategoryStore()
-const categoryList = computed(() =>
-  (categoryStore.categoryListData || []).filter(item => item.label !== '全部')
-)
-
+import { useCategoriesListQuery } from '@/queries/categories'
 import { useUserStore } from '@/stores/user.js'
+
+const categoriesQuery = useCategoriesListQuery()
+const categoryList = computed(() =>
+  (categoriesQuery.data.value || []).filter(item => item.label !== '全部')
+)
 const userStore = useUserStore()
 const user = computed(() => userStore.user)
 
 const handleClick = () => {
   const url = user.value.github
-  if (url) window.open(url, '_blank')
+  if (url) window.open(url, '_blank', 'noopener,noreferrer')
 }
 </script>
 

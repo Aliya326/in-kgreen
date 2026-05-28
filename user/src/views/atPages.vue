@@ -25,7 +25,7 @@
         <a-card class="download" title="下载" >
           <div v-if="data.download_url" class="download-content">
             <span>下载地址：</span>
-            <a-button  type="primary" :href="data.download_url" target="_blank">点击下载</a-button>
+            <a-button type="primary" :href="data.download_url" target="_blank" rel="noopener noreferrer">点击下载</a-button>
           </div>
           <a-empty v-else description="暂无可下载资源" />
         </a-card>
@@ -36,13 +36,13 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { marked } from 'marked'
-import { storeToRefs } from 'pinia'
-import { useArticleStore } from '@/stores/ArticleList'
 import DOMPurify from 'dompurify';
+import { useArticleDetailQuery } from '@/queries/articles'
 
-const articleStore = useArticleStore()
 const route = useRoute()
-const { articleList, loading } = storeToRefs(articleStore)
+const id = computed(() => Number(route.params.id))
+const articleQuery = useArticleDetailQuery(id)
+const loading = computed(() => articleQuery.isLoading.value)
 
 function sanitize(html) {
   return DOMPurify.sanitize(html)
@@ -50,9 +50,7 @@ function sanitize(html) {
 
 marked.setOptions({ mangle: false, headerIds: false, breaks: true })
 
-const data = computed(() => {
-  return articleList.value.find(item => item.id === Number(route.params.id)) || null
-})
+const data = computed(() => articleQuery.data.value || null)
 
 const notFound = computed(() => !loading.value && !data.value)
 

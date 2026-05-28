@@ -18,16 +18,75 @@
   </a-carousel>
 </template>
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { storeToRefs } from 'pinia'
-import { useArticleStore } from '@/stores/ArticleList'
+import { useArticlesInfiniteQuery } from '@/queries/articles'
 
 const router = useRouter()
-const articleStore = useArticleStore()
-const { articleList } = storeToRefs(articleStore)
+const articlesQuery = useArticlesInfiniteQuery({ pageSize: 20 })
+const articleList = computed(() => articlesQuery.data.value?.pages?.[0]?.list || [])
 
-const slides = computed(() => (articleList.value || []).slice(0, 4))
+const getTodayKey = () => {
+  const d = new Date()
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
+const hash32 = (str) => {
+  let h = 2166136261
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  return h >>> 0
+}
+
+const mulberry32 = (a) => () => {
+  a |= 0
+  a = (a + 0x6d2b79f5) | 0
+  let t = Math.imul(a ^ (a >>> 15), 1 | a)
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+}
+
+const shuffleWithSeed = (list, seedStr) => {
+  const res = list.slice()
+  const rnd = mulberry32(hash32(seedStr))
+  for (let i = res.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1))
+    ;[res[i], res[j]] = [res[j], res[i]]
+  }
+  return res
+}
+
+const todayKey = ref(getTodayKey())
+let nextTimer = null
+
+const scheduleNextDay = () => {
+  if (nextTimer) clearTimeout(nextTimer)
+  const now = new Date()
+  const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0)
+  nextTimer = setTimeout(() => {
+    todayKey.value = getTodayKey()
+    scheduleNextDay()
+  }, Math.max(0, next.getTime() - now.getTime()))
+}
+
+onMounted(() => {
+  scheduleNextDay()
+})
+
+onUnmounted(() => {
+  if (nextTimer) clearTimeout(nextTimer)
+})
+
+const slides = computed(() => {
+  const list = articleList.value || []
+  if (!list.length) return []
+  return shuffleWithSeed(list, todayKey.value).slice(0, 4)
+})
 
 const goDetail = (item) => {
   router.push(`/atPages/${item.id}`)

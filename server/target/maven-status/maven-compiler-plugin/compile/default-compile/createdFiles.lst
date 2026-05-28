@@ -1,4 +1,3 @@
-com\inkgreen\entity\Category.class
 com\inkgreen\controller\ArticleController.class
 com\inkgreen\mapper\CategoryMapper.class
 com\inkgreen\mapper\ArticleMapper.class
@@ -7,4 +6,5 @@ com\inkgreen\config\CorsConfig.class
 com\inkgreen\controller\CategoryController.class
 com\inkgreen\InKgreenApplication.class
 com\inkgreen\service\CategoryService.class
+com\inkgreen\entity\Category.class
 com\inkgreen\entity\Article.class

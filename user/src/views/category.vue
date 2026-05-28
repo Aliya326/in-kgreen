@@ -22,8 +22,8 @@
               </button>
             </div>
       </div>        
-        <a-row :gutter="[12, 12]" v-if="categoryList.length > 0">
-          <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in categoryList" :key="item.id">
+        <a-row :gutter="[12, 12]" v-if="articleList.length > 0">
+          <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="item in articleList" :key="item.id">
             <a-card class="card" 
             hoverable
             @click="handlePage(item)"
@@ -40,37 +40,49 @@
           </a-col>
         </a-row>
         <a-empty v-else description="该分类下暂无内容" style="margin-top: 60px" />
+        <div v-if="articleList.length" ref="sentinel" class="load-more">
+          <a-spin v-if="isFetchingNextPage" />
+          <span v-else>已加载 {{ articleList.length }}/{{ total || '-' }}</span>
+        </div>
      </div>
 </template>
 
 <script setup>
 import { computed, ref } from 'vue'
-import { useArticleStore } from '@/stores/ArticleList'
-import { storeToRefs } from 'pinia'
-import { useCategoryStore } from '@/stores/category'
 import { useRouter } from 'vue-router'
+import { useArticlesInfiniteQuery } from '@/queries/articles'
+import { useCategoriesListQuery } from '@/queries/categories'
+import { useInfiniteScroll } from '@/utils/useInfiniteScroll'
 
 const router = useRouter()
 const category = ref("全部")
-const articleStore = useArticleStore()
-const categoryStore = useCategoryStore()
-
-const { articleList } = storeToRefs(articleStore)
-const { categoryListData } = storeToRefs(categoryStore)
-
-const categoryList = computed(() => {
-  if (category.value === "全部") return articleList.value
-    return articleList.value.filter(item => item.category === category.value)
-})
+const sentinel = ref(null)
+const categoryFilter = computed(() => (category.value === '全部' ? '' : category.value))
+const articlesQuery = useArticlesInfiniteQuery({ pageSize: 24, category: categoryFilter })
+const categoriesQuery = useCategoriesListQuery()
+const categoryListData = computed(() => categoriesQuery.data.value || [])
+const articleList = computed(() => articlesQuery.data.value?.pages?.flatMap((p) => p.list) || [])
+const total = computed(() => articlesQuery.data.value?.pages?.[0]?.total || 0)
+const hasNextPage = computed(() => articlesQuery.hasNextPage.value)
+const isFetchingNextPage = computed(() => articlesQuery.isFetchingNextPage.value)
 
 const handlePage = (item) => {
   router.push(`/atPages/${item.id}`)
 }
 
+useInfiniteScroll(
+  sentinel,
+  () => {
+    if (!hasNextPage.value || isFetchingNextPage.value) return
+    void articlesQuery.fetchNextPage()
+  },
+  { enabled: () => hasNextPage.value && !isFetchingNextPage.value }
+)
+
 </script>
 <style scoped>
 .category {
-    width: 70%;
+    width: 80%;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -161,5 +173,11 @@ const handlePage = (item) => {
     height: 100%;
     object-fit: cover;
     display: block;
+}
+.load-more {
+  padding: 16px 0;
+  display: flex;
+  justify-content: center;
+  color: var(--text-secondary);
 }
 </style>

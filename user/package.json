@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.8",
+    "@tanstack/vue-query": "^5.100.14",
     "ant-design-vue": "^4.2.6",
     "axios": "^1.15.2",
     "dompurify": "^3.4.5",

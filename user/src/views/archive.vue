@@ -37,6 +37,10 @@
             </a-list>
           </a-collapse-panel>
         </a-collapse>
+        <div ref="sentinel" class="load-more">
+          <a-spin v-if="isFetchingNextPage" />
+          <span v-else-if="articleList.length">已加载 {{ articleList.length }}/{{ total || '-' }}</span>
+        </div>
       </div>
     </div>
 </template>
@@ -44,28 +48,35 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { SearchOutlined } from '@ant-design/icons-vue'
-import { useArticleStore } from '@/stores/ArticleList'
-import { storeToRefs } from 'pinia'
+import { useArticlesInfiniteQuery } from '@/queries/articles'
+import { useInfiniteScroll } from '@/utils/useInfiniteScroll'
 
 const value = ref('')
 const activeKey = ref([])
-const articleStore = useArticleStore()
-const { articleList } = storeToRefs(articleStore)
-
-const filteredList = computed(() => {
+const sentinel = ref(null)
+const month = computed(() => {
   const kw = value.value.trim()
-  if (!kw) return articleList.value
-  return articleList.value.filter(
-    (item) =>
-      (item.publishDate || '').includes(kw) ||
-      (item.title || '').includes(kw)
-  )
+  if (!kw) return ''
+  const m = kw.match(/^(\d{4}-\d{2})(?:-\d{2})?$/)
+  return m ? m[1] : ''
 })
+const keyword = computed(() => {
+  const kw = value.value.trim()
+  if (!kw) return ''
+  if (/^(\d{4}-\d{2})(?:-\d{2})?$/.test(kw)) return ''
+  return kw
+})
+
+const articlesQuery = useArticlesInfiniteQuery({ pageSize: 30, keyword, month })
+const articleList = computed(() => articlesQuery.data.value?.pages?.flatMap((p) => p.list) || [])
+const total = computed(() => articlesQuery.data.value?.pages?.[0]?.total || 0)
+const hasNextPage = computed(() => articlesQuery.hasNextPage.value)
+const isFetchingNextPage = computed(() => articlesQuery.isFetchingNextPage.value)
 
 // 按 publishDate 分组并倒序
 const grouped = computed(() => {
   const map = new Map()
-  filteredList.value.forEach((item) => {
+  articleList.value.forEach((item) => {
     const date = (item.publishDate || '').toString()
     const key = date ? date.slice(0, 7) : '未知日期'
     if (!map.has(key)) map.set(key, { time: key, items: [] })
@@ -90,6 +101,15 @@ watch(
     if (activeKey.value.length === 0 && val.length > 0) activeKey.value = [val[0].time]
   },
   { immediate: true }
+)
+
+useInfiniteScroll(
+  sentinel,
+  () => {
+    if (!hasNextPage.value || isFetchingNextPage.value) return
+    void articlesQuery.fetchNextPage()
+  },
+  { enabled: () => hasNextPage.value && !isFetchingNextPage.value }
 )
 </script>
 
@@ -179,5 +199,11 @@ watch(
   color: var(--text-inverse);
   background-color: var(--color-badge);
   border-radius: 10px;
+}
+.load-more {
+  padding: 16px 0;
+  display: flex;
+  justify-content: center;
+  color: var(--text-secondary);
 }
 </style>

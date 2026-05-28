@@ -26,6 +26,10 @@
               </a-card>
             </a-col>
           </a-row>
+          <div ref="sentinel" class="load-more">
+            <a-spin v-if="isFetchingNextPage" />
+            <span v-else-if="!hasNextPage && articleList.length">没有更多了</span>
+          </div>
         </div>
         <div class="sidebar">
           <Sidercard/>
@@ -36,15 +40,29 @@
 </template>
 
 <script setup>
+import { computed, ref } from 'vue'
 import contentHeader from '@/components/contentHeader.vue'
 import Sidercard from '@/components/contanSidebar.vue'
-import { useArticleStore } from '@/stores/ArticleList'
 import { useRouter } from 'vue-router'
-import { storeToRefs } from 'pinia'
+import { useArticlesInfiniteQuery } from '@/queries/articles'
+import { useInfiniteScroll } from '@/utils/useInfiniteScroll'
 
 const router = useRouter()
-const articleStore = useArticleStore()
-const { articleList, loading } = storeToRefs(articleStore)
+const sentinel = ref(null)
+const articlesQuery = useArticlesInfiniteQuery({ pageSize: 20 })
+const articleList = computed(() => articlesQuery.data.value?.pages?.flatMap((p) => p.list) || [])
+const loading = computed(() => articlesQuery.isLoading.value)
+const hasNextPage = computed(() => articlesQuery.hasNextPage.value)
+const isFetchingNextPage = computed(() => articlesQuery.isFetchingNextPage.value)
+
+useInfiniteScroll(
+  sentinel,
+  () => {
+    if (!hasNextPage.value || isFetchingNextPage.value) return
+    void articlesQuery.fetchNextPage()
+  },
+  { enabled: () => hasNextPage.value && !isFetchingNextPage.value }
+)
 const handlePage = (item) => {
   router.push(`/atPages/${item.id}`)
 }
@@ -121,5 +139,11 @@ const handlePage = (item) => {
     height: 100%;
     object-fit: cover;
     display: block;
+}
+.load-more {
+  padding: 16px 0;
+  display: flex;
+  justify-content: center;
+  color: var(--text-secondary);
 }
 </style>
