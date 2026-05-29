@@ -1,9 +1,15 @@
 <template>
-  <span class="theme-toggle" @click="themeStore.toggleTheme()">
+  <button
+    type="button"
+    class="theme-toggle"
+    :aria-pressed="themeStore.isDark"
+    :aria-label="themeStore.isDark ? '切换到浅色模式' : '切换到深色模式'"
+    @click="themeStore.toggleTheme()"
+  >
     <BulbFilled v-if="themeStore.isDark" />
     <BulbOutlined v-else />
     <span class="label">{{ themeStore.isDark ? '浅色' : '深色' }}</span>
-  </span>
+  </button>
 </template>
 
 <script setup>
@@ -22,6 +28,8 @@ const themeStore = useThemeStore()
   padding: 0 12px;
   color: var(--text-primary);
   user-select: none;
+  background: transparent;
+  border: none;
 }
 .theme-toggle:hover {
   color: var(--color-badge);

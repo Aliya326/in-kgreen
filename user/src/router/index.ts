@@ -13,13 +13,13 @@ const router = createRouter({
             path:"/home",
             name:"home",
             component:()=>import("@/views/home.vue"),
-            meta:{ prefetch:["articlesPage","categoriesList"] }
+            meta:{ prefetch:["articlesPage","categoriesList"], pageSize: 20 }
           },
           {
             path:"/archive",
             name:"archive",
             component:()=>import("@/views/archive.vue"),
-            meta:{ prefetch:["articlesPage"] }
+            meta:{ prefetch:["articlesPage"], pageSize: 30 }
           },
           {
             path:"/atPages/:id",
@@ -36,13 +36,13 @@ const router = createRouter({
             path:"/goableSearch",
             name:"goableSearch",
             component:()=>import("@/views/goableSearch.vue"),
-            meta:{ prefetch:["articlesPage"] }
+            meta:{ prefetch:["articlesPage"], pageSize: 20 }
           },
           {
             path:"/category",
             name:"category",
             component:()=>import("@/views/category.vue"),
-            meta:{ prefetch:["categoriesList","articlesPage"] }
+            meta:{ prefetch:["categoriesList","articlesPage"], pageSize: 24 }
           },
         ]
       },

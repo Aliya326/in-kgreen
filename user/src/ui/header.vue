@@ -9,19 +9,32 @@
     />
     <div class="header-extra">
       <a-auto-complete
-        :options="options"
         v-if="isSearching"
+        :options="options"
         v-model:value="keyword"
-        placeholder="输入关键词，回车搜索"
         class="search-input"
-        autofocus
-        allow-clear
-        @blur="handleBlur"
-        @keydown.enter="handleEnter"
         @select="onSelect"
         @search="onSearch"
-      />
-      <SearchOutlined v-else class="icon-btn" @click="openSearch" />
+      >
+        <a-input
+          ref="searchInputRef"
+          placeholder="输入关键词，回车搜索"
+          allow-clear
+          @blur="handleBlur"
+          @keydown.enter="handleEnter"
+          @keydown.esc="handleEscape"
+        />
+      </a-auto-complete>
+      <button
+        v-else
+        ref="searchButtonRef"
+        type="button"
+        class="icon-btn"
+        aria-label="打开搜索"
+        @click="openSearch"
+      >
+        <SearchOutlined />
+      </button>
       <ThemeToggle />
     </div>
   </div>
@@ -43,27 +56,47 @@ const current = computed(() => [router.currentRoute.value.name || 'home'])
 
 const isSearching = ref(false)
 const keyword = ref('')
+const options = ref([]) // 用于存储搜索建议选项列表的响应式引用，初始为空数组
+
+const searchInputRef = ref(null)
+const searchButtonRef = ref(null)
 
 const openSearch = () => {
   isSearching.value = true
   nextTick(() => {
-    document.querySelector('.search-input input')?.focus()
+    searchInputRef.value?.focus?.()
+  })
+}
+
+const closeSearch = () => {
+  isSearching.value = false
+  keyword.value = ''
+  options.value = []
+  nextTick(() => {
+    searchButtonRef.value?.focus?.()
   })
 }
 
 const handleBlur = () => {
   // 给点击 Enter 的事件先派发的机会
   setTimeout(() => {
-    if (!keyword.value) isSearching.value = false
+    if (!keyword.value) closeSearch()
   }, 150)
 }
 
-const handleEnter = (e) => {
-  const kw = (e?.target?.value || '').trim()
+const goSearch = (raw) => {
+  const kw = (raw || '').trim()
   if (!kw) return
   router.push({ name: 'goableSearch', query: { keyword: kw } })
-  isSearching.value = false
-  keyword.value = ''
+  closeSearch()
+}
+
+const handleEnter = () => {
+  goSearch(keyword.value)
+}
+
+const handleEscape = () => {
+  closeSearch()
 }
 
 const handleClick = (e) => {
@@ -76,8 +109,6 @@ const items = computed(() => [
   { key: 'category', icon: () => h(FolderOutlined), label: '分类', title: '分类' },
   { key: 'about', label: '关于', title: '关于' },
 ])
-
-const options = ref([]) // 用于存储搜索建议选项列表的响应式引用，初始为空数组
 
 // 搜索文本变化时的回调函数，参数 searchText 是用户输入的内容
 let searchSeq = 0
@@ -139,16 +170,7 @@ function debounce(fn, wait = 200, immediate = false) {
 }
 // 选中某个建议项或按下回车时的回调函数，参数 val 是选中的值
 const onSelect = (val) => {
-  // 对选中值去除首尾空格
-  const kw = (val || '').trim()
-  // 如果去除空格后没有内容，则不执行跳转，直接返回
-  if (!kw) return
-  // 使用路由跳转到名为 'goableSearch' 的页面，并传递 keyword 查询参数
-  router.push({ name: 'goableSearch', query: { keyword: kw } })
-  // 关闭搜索状态（假设 isSearching 是一个用来控制搜索框显示状态的 ref）
-  isSearching.value = false
-  // 清空搜索关键词（假设 keyword 是绑定到输入框的 ref）
-  keyword.value = ''
+  goSearch(val)
 }
 </script>
 
@@ -183,6 +205,10 @@ const onSelect = (val) => {
   padding: 0 8px;
   font-size: 16px;
   color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: none;
 }
 .icon-btn:hover {
   color: var(--color-badge);

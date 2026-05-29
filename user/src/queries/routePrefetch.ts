@@ -40,6 +40,7 @@ export function prefetchRouteData(to) {
   const keyword = (to?.query?.keyword || '').toString().trim()
   const month = (to?.query?.month || '').toString().trim()
   const category = (to?.query?.category || '').toString().trim()
+  const pageSize = Number(to?.meta?.pageSize || 20)
 
   for (const key of list) {
     if (key === 'categoriesList') {
@@ -53,15 +54,15 @@ export function prefetchRouteData(to) {
     }
     if (key === 'articlesPage') {
       if (routeName === 'goableSearch') {
-        if (keyword) void routePrefetchers.articlesPage({ pageSize: 20, keyword }).catch(() => undefined)
+        if (keyword) void routePrefetchers.articlesPage({ pageSize, keyword }).catch(() => undefined)
       } else if (routeName === 'archive') {
-        void routePrefetchers.articlesPage({ pageSize: 20, keyword: keyword || undefined, month: month || undefined }).catch(
+        void routePrefetchers.articlesPage({ pageSize, keyword: keyword || undefined, month: month || undefined }).catch(
           () => undefined
         )
       } else if (routeName === 'category') {
-        void routePrefetchers.articlesPage({ pageSize: 20, category: category || undefined }).catch(() => undefined)
+        void routePrefetchers.articlesPage({ pageSize, category: category || undefined }).catch(() => undefined)
       } else {
-        void routePrefetchers.articlesPage({ pageSize: 20 }).catch(() => undefined)
+        void routePrefetchers.articlesPage({ pageSize }).catch(() => undefined)
       }
     }
   }
