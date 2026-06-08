@@ -37,6 +37,27 @@
       </button>
       <ThemeToggle />
     </div>
+        <a-button
+     v-if="!user.isLogin"
+     type="primary" 
+     class="login-btn" 
+     @click="router.push('/login')"
+     >
+      登录
+    </a-button>
+    <a-dropdown v-model:open="visible" v-else>
+      <div>
+      <img :src="user.avatar"  alt="用户头像" class="user-avatar" />
+      <span>{{user.username}}</span>
+      </div>
+    <template #overlay>
+      <a-menu @click="handleMenuClick">
+        <a-menu-item key="1">用户中心</a-menu-item>
+        <a-menu-item key="2">设置</a-menu-item>
+        <a-menu-item key="3">退出登录</a-menu-item>
+      </a-menu>
+    </template>
+  </a-dropdown>
   </div>
 </template>
 
@@ -49,14 +70,16 @@ import {
   SearchOutlined,
 } from '@ant-design/icons-vue'
 import router from '@/router'
+import useUserStore from '@/stores/user'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import { articleApi } from '@/api/article'
 
+const user = useUserStore()
 const current = computed(() => [router.currentRoute.value.name || 'home'])
-
 const isSearching = ref(false)
 const keyword = ref('')
 const options = ref([]) // 用于存储搜索建议选项列表的响应式引用，初始为空数组
+console.log('当前登录状态:', user.isLogin)
 
 const searchInputRef = ref(null)
 const searchButtonRef = ref(null)
@@ -109,6 +132,19 @@ const items = computed(() => [
   { key: 'category', icon: () => h(FolderOutlined), label: '分类', title: '分类' },
   { key: 'about', label: '关于', title: '关于' },
 ])
+
+const handleMenuClick = (e) => {
+  if (e.key === '1') {
+    router.push('/user-center')
+  }
+  if (e.key === '2') {
+    router.push('/setting')
+  }
+  if (e.key === '3') {
+    user.logout()
+    router.push('/login')
+  }
+}
 
 // 搜索文本变化时的回调函数，参数 searchText 是用户输入的内容
 let searchSeq = 0

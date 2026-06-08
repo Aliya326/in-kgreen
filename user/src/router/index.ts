@@ -47,6 +47,11 @@ const router = createRouter({
         ]
       },
       {
+        path:"/login",
+        name:"login",
+        component:()=>import("@/login.vue")
+      },
+      {
         path:"/:pathMatch(.*)*",
         name:"not-found",
         component:()=>import("@/404.vue")
