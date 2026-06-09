@@ -52,7 +52,7 @@
       </div>
     <template #overlay>
       <a-menu @click="handleMenuClick">
-        <a-menu-item key="1">用户中心</a-menu-item>
+        <a-menu-item key="1">个人中心</a-menu-item>
         <a-menu-item key="2">设置</a-menu-item>
         <a-menu-item key="3">退出登录</a-menu-item>
       </a-menu>

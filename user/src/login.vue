@@ -1,6 +1,6 @@
 <template>
     <a-card class="login-card">
-        <span>登录</span>
+        <h1>登录</h1>
     <a-form
     :model="formState"
     name="horizontal_login"
@@ -32,9 +32,12 @@
         </template>
       </a-input-password>
     </a-form-item>
+    <a-form-item>
+      <a-checkbox>记住密码</a-checkbox>
+    </a-form-item>
       <a-button class="login-btn" :disabled="disabled" type="primary" html-type="submit">登录</a-button>
-      <a class="register-btn" href="/register">注册账号</a>
   </a-form>
+  <a class="register-btn" @click="router.push('/register')">注册账号</a>
  </a-card>
 </template>
 <script setup lang="ts">
@@ -86,12 +89,11 @@ const onFinishFailed = () => {
 }
 .login-card {
   width: 400px;
-  height: 400px ;
-  margin: 100px auto;
+  height: 600px ;
+  margin: 0 auto;
 }
 .login-btn {
   width: 100%;
-  margin-top: 20px;
 }
 
 .register-btn {
@@ -99,5 +101,8 @@ const onFinishFailed = () => {
   width: fit-content;
   margin-top: 20px;
   margin-left: auto;
+}
+h1 {
+  text-align: center;
 }
 </style>
